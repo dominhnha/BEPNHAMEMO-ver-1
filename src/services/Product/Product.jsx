@@ -196,7 +196,29 @@ export const sortProduct = async(name = "", proviso = "") =>{
 
 export const searchProduct = async(queryText,fieldName,proviso)=>{
     const colRef = collection(db,CollectionName);
-    if(fieldName === null ||proviso === null){
+    if(queryText === null){
+        return await getDocs(query(colRef, orderBy(`${fieldName}`,`${proviso}`)))
+            .then(async(docs)=>{
+                let ListProduct = [];
+                docs.forEach(item=>{
+                    ListProduct.push({
+                        Pid:item.id,
+                        Info:item.data()
+                    })
+                })
+                return {
+                    success: true,
+                    payload:ListProduct
+                }
+            })
+            .catch(err => {
+                return {
+                    success: false,
+                    payload:err
+                }
+            });
+    }
+    else if(fieldName === null ||proviso === null){
         return await getDocs(colRef
             ,where('NameProduct','>=', `${queryText}`)
             ,where('NameProduct','<=', `${queryText + '\uf8ff'}` )
