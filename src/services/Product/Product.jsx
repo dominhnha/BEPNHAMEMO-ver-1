@@ -1,5 +1,5 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, Timestamp,where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, Timestamp,where } from "firebase/firestore";
 
 const CollectionName = "Product"
 
@@ -14,6 +14,7 @@ export const AddProduct = async() => {
         exp: await Timestamp.fromDate(new Date("December 10,1900")),
         mfg: await Timestamp.fromDate(new Date("December 10,1900")),
         Classify: "",
+        DayProduce: serverTimestamp(),
     }
     const CollectionRef = collection(db, CollectionName);
     return await addDoc(CollectionRef,NewProduct)

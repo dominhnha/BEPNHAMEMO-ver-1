@@ -1,5 +1,5 @@
 import {db} from '../../Firebase__config'
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { async } from '@firebase/util';
 import { set } from 'firebase/database';
 
@@ -107,5 +107,47 @@ export const setNewCart = async(uid,listProduct)=>{
             payload:e,
         }
     })
+}
+
+export const AddCartCollection = async(uid,pid,did)=>{
+ const initCart = {
+    items: [{
+        pid, 
+        Nameproduct:"",
+        Quantity: "",
+        Price:"",
+    }],
+    Total: "",
+    Discount:did,
+    PurchaseDate: serverTimestamp(),
+
+ }
+    return await setDoc(doc(db,"Cart",uid),initCart)
+    .then(e=>{
+        return {
+            success: true,
+            payload:null,
+        }
+    })
+    .catch((error) => {
+        return {
+            success: false,
+            payload:error,
+        }
+    })
+}
+
+export const AddToOrder = async(uid,pid)=>{
+    const docRef = doc(db,CollectionName,uid);
+    const colRef = collection(docRef,"Cart");
+    addDoc(colRef,{
+        Quantity:"",
+        Item:[{
+            pid,
+            price:"",
+        }]
+
+    });
+
 }
 
