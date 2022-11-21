@@ -1,23 +1,25 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, Timestamp,where } from "firebase/firestore";
-
+import { addDoc, collection, doc, endAt, getDoc, getDocs, increment, limit, orderBy, query, serverTimestamp, setDoc, startAt, Timestamp,updateDoc,where } from "firebase/firestore";
+import { GetDiscountByID } from '../Authencation/Discount';
 const CollectionName = "Product"
 
 export const AddProduct = async() => {
+    const colRef = collection(db, CollectionName);
+    const Discount = await GetDiscountByID(colRef.id);
     const NewProduct = {
         NameProduct: "",
         DescriptionProduct: "",
         Ingerdient: "",
-        PriceProduct: "",
-        QuantityProduct: "",
+        Price: "",
+        Quantity: "",
         ImageIdProduct: "",
         exp: await Timestamp.fromDate(new Date("December 10,1900")),
         mfg: await Timestamp.fromDate(new Date("December 10,1900")),
         Classify: "",
         DayProduce: serverTimestamp(),
+        Disocount:Discount,
     }
-    const CollectionRef = collection(db, CollectionName);
-    return await addDoc(CollectionRef,NewProduct)
+    return await addDoc(colRef,NewProduct)
     .then(e=>{
         return {
             success: true,
@@ -31,20 +33,15 @@ export const AddProduct = async() => {
         }
     })
 };
-
-
 // Timestamp cover date by toDate()
 export const GetProductById = async(pid)=>{
     const docRef = doc(db, CollectionName, pid);   
     const docSnap = await getDoc(docRef);
+    let infoProduct = "";
     if (docSnap.exists()) {
-        return {
-            success: true,
-            payload:{
-                Pid:pid,
-                Info:docSnap.data(),
-            }
-        }
+        infoProduct = docSnap.data();
+        return infoProduct;
+            
     } else {
         // doc.data() will be undefined in this case
         return {
@@ -54,7 +51,7 @@ export const GetProductById = async(pid)=>{
     }
 } 
 
- //Get 6 new product
+ //Get new product
  export const getNewProduct = async(number) => {
     const colRef = collection(db, CollectionName);
     return await getDocs(query(colRef, orderBy("DayProduce", "asc"), limit(number)))
@@ -271,4 +268,80 @@ export const searchProduct = async(queryText,fieldName,proviso)=>{
             });
     }
    
+}
+
+
+//Get name Product
+export const GetNameProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let NameProduct = "";
+    if(docSnap.exists()){
+        NameProduct = docSnap.data().NameProduct;
+        return await NameProduct;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
+}
+//Get PriceProduct
+export const GetPriceProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let PriceProduct = "";
+    if(docSnap.exists()){
+        PriceProduct = docSnap.data().Price;
+        return PriceProduct;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
+}
+//Add best sell products
+export const AddBestSell=async(pid,quantity)=>{
+    const docRef = doc(db,"BestSellProduct",pid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists()){
+await updateDoc(docRef,{
+            Quantity: increment(quantity)
+        })
+    }else{
+    const infoProduct = await GetProductById(pid);
+    const initBestSell = {
+        Pid:pid,
+        Info:infoProduct,
+        Quantity:quantity,
+    }
+    await setDoc(docRef,initBestSell);
+}
+}
+//Best sell Product
+export const GetBestsellProduct = async(number)=>{
+    const colRef = collection(db, "BestSellProduct");
+    return await getDocs(query(colRef,orderBy("Quantity", "desc"),limit(number)))
+    .then(async(docs)=>{
+        let ListProduct =[];
+        docs.forEach(item=>{
+            ListProduct.push({
+                Info:item.data()
+            })
+        })
+        return{
+            success:true,
+            payload:ListProduct
+        }
+    })
+    .catch((err)=>{
+        return{
+            success:false,
+            payload:err,
+        }
+    })
+
 }

@@ -30,6 +30,33 @@ export const AddDiscount = async() =>{
     })
 };
 
+
+//Discount 10% product
+export const Discount10 = async(pid)=>{
+    const initDiscount10={
+        NameDiscount:"Discount 10% Product",
+        PercentDiscount:"10%",
+    }
+    return await setDoc(doc(db,"Discount 10% Product",pid),initDiscount10)
+}
+
+
+//Discount 20% product
+export const Discount20 = async(pid)=>{
+    const initDiscount20={
+        NameDiscount:"Discount 20% Product",
+        PercentDiscount:"10%",
+    }
+    return await setDoc(doc(db,"Discount 20% Product",pid),initDiscount20)
+}
+//Discount 30% product
+export const Discount30 = async(pid)=>{
+    const initDiscount30={
+        NameDiscount:"Discount 30% Product",
+        PercentDiscount:"30%",
+    }
+    return await setDoc(doc(db,"Discount 30% Product",pid),initDiscount30)
+}
 //Get discount by id
 export const GetDiscountByID = async(did) =>{
     const docRef = doc(db,CollectionName,did);
@@ -50,3 +77,20 @@ export const GetDiscountByID = async(did) =>{
     }
 }
 }
+//Get PercentDiscount by id
+export const GetPercentDiscountByID = async(did) =>{
+    const docRef = doc(db,CollectionName,did);
+    const docSnap = await getDoc(docRef);
+    let PercentDiscount = "";
+    if(docSnap.exists()){
+        PercentDiscount = await docSnap.data().PercentDiscount;
+        return PercentDiscount;
+    }
+    else{
+        return{
+            success:false,
+            payload:"No such document!",
+    }
+}
+}
+
