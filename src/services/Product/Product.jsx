@@ -303,21 +303,39 @@ export const GetPriceProduct = async(pid)=>{
         }
     }
 }
+//Get Quantity Product By it
+export const GetQuantityProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let Quantity = "";
+    if(docSnap.exists()){
+        Quantity = docSnap.data().Quantity;
+        return Quantity;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
+}
 //Add best sell products
 export const AddBestSell=async(pid,quantity)=>{
     const docRef = doc(db,"BestSellProduct",pid);
     const docSnap = await getDoc(docRef);
+    let infoProduct = await GetProductById(pid);
     if(docSnap.exists()){
 await updateDoc(docRef,{
-            Quantity: increment(quantity)
+        Pid:pid,
+        Info:infoProduct,
+        QuantitySold: increment(quantity)
         })
     }else{
-    const infoProduct = await GetProductById(pid);
     const initBestSell = {
         Pid:pid,
         Info:infoProduct,
-        Quantity:quantity,
-    }
+        QuantitySold:quantity,
+    } 
     await setDoc(docRef,initBestSell);
 }
 }
@@ -345,3 +363,4 @@ export const GetBestsellProduct = async(number)=>{
     })
 
 }
+//
