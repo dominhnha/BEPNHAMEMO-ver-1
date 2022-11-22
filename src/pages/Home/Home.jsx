@@ -5,7 +5,7 @@ import {AUTH__SET} from '../../reducers/type'
 import {AuthContext} from '../../contexts/AuthContextProvider';
 import {  AddUserAuthencation,SiginUserAuthencation} from '../../services/Authencation/Authencation';
 import { async } from '@firebase/util';
-import {  AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
+import {  AddPurchaseHistoryForUser, AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
 import { AddProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
 import Slider from '../../components/Slider/Slider';
 import ProductCand from '../../components/ProductCand/ProductCand';
@@ -66,7 +66,14 @@ const Home = props => {
         try{
           // const data = await sortProduct("Quantity","asc");
           // const data = await searchProduct("K");
-          const data =await searchProduct(null,"NameProduct","asc")
+          //const data =await searchProduct(null,"NameProduct","asc")
+          const data = await AddPurchaseHistoryForUser(
+            "3VTxBjyVnqyYCN0uTXVT"
+            ,[{pid: "6lyk7W5ubcLF4DRu2hlR",quantity: 101}
+            ,{pid:"7bqHI9FKm8BLfoEvVYVW", quantity: 10}
+            ,{pid: "AkTlxXQVhTfD3M2qGOYM", quantity:15}]
+            ,"5953PoSr4iVdyRKpBXAG"
+            );
           console.log("data1",data);
         }catch(e){
           console.log(e);
@@ -74,15 +81,15 @@ const Home = props => {
       }
       getData()
     },[])
-    useEffect(()=>{
-      const getData = async()=>{
-        const data = await getNewProduct(7);
-        if(data.success) setNewProduct(data.payload);
+    // useEffect(()=>{
+    //   const getData = async()=>{
+    //     const data = await getNewProduct(7);
+    //     if(data.success) setNewProduct(data.payload);
         
-      }
-      getData()
-    },[])
-   console.log(newProduct)
+    //   }
+    //   getData()
+    // },[])
+   //console.log(newProduct)
     return (
       <div className='Home'>
         {/*---------------- slider----------------- */}

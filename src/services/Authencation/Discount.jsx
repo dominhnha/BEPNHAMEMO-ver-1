@@ -94,3 +94,20 @@ export const GetPercentDiscountByID = async(did) =>{
 }
 }
 
+//Get quantity discount
+export const GetQuantityDiscount = async(did) =>{
+    const docRef = doc(db,CollectionName,did);
+    const docSnap = await getDoc(docRef);
+    let Quantity = "";
+    if(docSnap.exists()){
+        Quantity = await docSnap.data().PercentDiscount;
+        return Quantity;
+    }
+    else{
+        return{
+            success:false,
+            payload:"No such document!",
+    }
+}
+}
+
