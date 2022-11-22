@@ -4,6 +4,7 @@ import "./ProductCand.scss"
 import Button from '../Button/Button/Button'
 import { Link } from 'react-router-dom'
 import Skeleton from '../../components/LoadingSkeleton/EffectLoanding/EffectLoanding'
+import {formatNumber } from '../../utils/Format'
 const ProductCand = props => {
     const [Pid,setPid] = useState(null)
     const [Name,setName] = useState(null)
@@ -15,7 +16,7 @@ const ProductCand = props => {
         setImage(props.Image ? props.Image[0] : null)
         setDescription(props.Description ?props.Description : null)
         setName(props.Name ? props.Name : null)
-        setPrice(props.Price ? props.Price : null)
+        setPrice(props.Price ?  props.Price : null)
     },[])
    
   return (
@@ -48,7 +49,7 @@ const ProductCand = props => {
             {
                 Price
                 ? <div className="ProductCand__bottom__warpper">
-                    <div className="ProductCand__price">{Price}</div>
+                    <div className="ProductCand__price">{ formatNumber (Price) }₫</div>
                     <div className="ProductCand__price--sale">350,000₫</div>
                 </div>
                 : <Skeleton ></Skeleton>

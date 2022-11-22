@@ -24,7 +24,7 @@ const Header = props => {
     },
     {
       title: 'Sản phẩm',
-      path: '/Product',
+      path: '/Product/Search',
     }
     ,{
       title:'liên hệ',
@@ -128,7 +128,7 @@ const Header = props => {
                     <li className="Header__user__item">
                         <Icon
                           icon={"bx bx-search"}
-                          path={"/Product"}
+                          path={"Product/Search"}
                           describe={"Tìm kiếm"}
                         />
                     </li>

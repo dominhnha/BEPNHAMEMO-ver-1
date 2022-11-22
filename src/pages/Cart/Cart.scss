@@ -62,11 +62,15 @@
     &__Image{
     //margin-right: auto;
         outline: none;
+      
         min-width: 100px;
+            min-height: 100px;
         margin: 5px;
         img{
             width: 100px;
             height: 100px;
+            min-width: 100px;
+            min-height: 100px;
             object-fit: cover;
             border-radius: 8px;
             //padding: 10px;

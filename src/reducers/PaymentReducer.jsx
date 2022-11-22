@@ -1,5 +1,5 @@
 import{
-    PAYMENT__SET
+    PAYMENT__SET, PAYMENT__UPDATA
 } from './type'
 
 export const PaymentReducer = (state, action) =>{
@@ -10,6 +10,13 @@ export const PaymentReducer = (state, action) =>{
                 success:true,
                 payload:payload,
               }
+        }
+        case PAYMENT__UPDATA:{
+            const initPayment = [payload];
+                return state = {
+                    success:true,
+                    payload:initPayment,
+                };
         }
         default:
             return state;

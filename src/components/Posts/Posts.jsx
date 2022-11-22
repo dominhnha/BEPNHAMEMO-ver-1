@@ -8,7 +8,7 @@ const Posts = ({ posts}) => {
     console.log(posts)
   return (
     <Grid
-        col={3}
+        col={4}
         mdCol={2}
         smCol={1}
         gap={10}
@@ -18,7 +18,7 @@ const Posts = ({ posts}) => {
             ? posts.map(item=>{
                 return(
                 <ProductCand
-                    key={v4()}
+                    key={item.Pid}
                     Pid={item.Pid}
                     Name={item.Info.NameProduct}
                     Description={item.Info.DescriptionProduct}

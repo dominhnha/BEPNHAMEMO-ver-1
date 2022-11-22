@@ -11,8 +11,10 @@ import { useEffect } from 'react';
 import { PaymentContext } from '../../contexts/PaymentContextProvider';
 import { CART__DECREMENT, CART__INCREMENT, CART__REMOVE, PAYMENT__SET } from '../../reducers/type';
 import Sea from '../../components/Animation/Sea/Sea'
-
+import { useNavigate } from 'react-router';
+import {formatNumber } from '../../utils/Format'
 const Carts = props => {
+  const history = useNavigate();
   const {Cart,dispatch} = useContext(CartContext);
   const { Payment,Paymentdispatch} = useContext(PaymentContext);
   const [ListProduct,SetListProduct] = useState([]);
@@ -113,6 +115,28 @@ const Carts = props => {
     }
     
   },[checked,ListProduct,Cart])
+
+  const handlePayment = useCallback(
+    (e)=>{
+      e.preventDefault();
+      if(checked.length <=0){
+        toast.error('Chọn sản phẩm trước khi thanh toán nhé !', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          return;
+      }else{
+        history("/Product/Payment")
+      }
+      
+    },[checked]
+  )
   console.log("Pay",Payment)
   console.log("Cart",Cart)
   return(
@@ -123,6 +147,7 @@ const Carts = props => {
           {
             ListProduct.length > 0 
              ? ListProduct.map((item)=>{
+                 const total = formatNumber(Number(item.Price)) 
                 return(
                   <label 
                     className="Cart__item"  
@@ -147,7 +172,7 @@ const Carts = props => {
                           <div className="Cart__warpper">
                             <p> ID:{item.Pid}</p>
                             <h2>Tên:{item.NameProduct}</h2>
-                            <p>Giá: <span>{item.Price}₫</span></p>
+                            <p>Giá: <span>{total}₫</span></p>
                           </div>
                         </div>
                         
@@ -199,7 +224,7 @@ const Carts = props => {
                     }₫</span>
                   : <span>0₫</span>
                 }
-                <a href="" className="Cart__payment__button">
+                <a href="" className="Cart__payment__button" onClick={(e)=>handlePayment(e)}>
                     Thanh Toán 
                 </a>
               </div>

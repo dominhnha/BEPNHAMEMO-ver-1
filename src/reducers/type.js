@@ -9,4 +9,5 @@ export const  CART__INCREMENT = "CART__INCREMENT"
 export const  CART__DECREMENT = "CART__DECREMENT"
 
 
-export const  PAYMENT__SET = "PAYMENT__SET";
+export const  PAYMENT__SET = "PAYMENT__SET"
+export const  PAYMENT__UPDATA = "PAYMENT__UPDATA"

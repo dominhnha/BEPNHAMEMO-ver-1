@@ -21,6 +21,7 @@ const MainRoutes = props => {
           <Route exact index element={<Product/>}></Route>
           <Route exact path=':slug' element={<ProductView/>}></Route>
           <Route exact path='Search' element={<Search/>}></Route>
+          <Route exact path='Payment' element={<Payment/>}></Route>
         </Route>
 
         {/* Account */}
@@ -28,7 +29,7 @@ const MainRoutes = props => {
           <Route exact path='SignIn' element={<SignIn/>}></Route>
           <Route exact path='SignUp' element={<SignUp/>}></Route>
           <Route exact path='Cart' element={<Cart/>}></Route>
-          <Route exact path='Payment' element={<Payment/>}></Route>
+          
         </Route>
         {/*  */}
         <Route  path='*' element={<Error/>}></Route>

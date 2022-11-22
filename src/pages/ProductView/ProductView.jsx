@@ -26,15 +26,17 @@ import { AddToCart, GetToCart, GetUserCollection, setNewCart } from '../../servi
 import Section, { SectionBody, SectionTitle } from '../../components/Section/Section';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContextProvider';
-import { AUTH__SET, CART__REMOVE, CART__UPDATA } from '../../reducers/type';
+import { AUTH__SET, CART__REMOVE, CART__UPDATA, PAYMENT__UPDATA } from '../../reducers/type';
 import Cart from '../Cart/Carts';
 import { CartContext } from '../../contexts/CartContextProvider';
+import { PaymentContext } from '../../contexts/PaymentContextProvider';
 
 
 
 const ProductView = props => {
   const history = useNavigate();
   const {Cart,dispatch} = useContext(CartContext);
+  const { Payment,Paymentdispatch} = useContext(PaymentContext);
   const [imagesNavSlider, setImagesNavSlider] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [product,setProduct] = useState(null);
@@ -95,11 +97,21 @@ const ProductView = props => {
   //--------------- user payment product----------------- 
   const handlePayment = useCallback((e)=>{
     try{
-      
+      Paymentdispatch({
+        type:PAYMENT__UPDATA,
+        payload:{
+            Pid:slug,
+            Quantity:quantity,
+            Price:product.Info.Price,
+            Image:product.Info.Image,
+            NameProduct:product.Info.NameProduct,
+        }    
+      })
+      history("/Product/Payment");
     }catch(e){
       console.log(e)
     }
-  },[])
+  },[Cart,product,quantity])
 
   console.log(slug)
   console.log("Product",product)
@@ -244,7 +256,7 @@ const ProductView = props => {
                           Thêm Giỏ Hàng
                         </Button>
                         <Button
-                          onClick={null}
+                          onClick={handlePayment}
                         >
                           Mua Ngay
                         </Button>

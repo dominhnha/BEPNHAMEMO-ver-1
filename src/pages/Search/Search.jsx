@@ -11,6 +11,12 @@ import Socola from '../../assets/Img/Socola.jpg'
 import SaltyCake from '../../assets/Img/Salty-cake.jpg'
 import { classifyProduct, searchProduct } from '../../services/Product/Product'
 import { v4 } from 'uuid'
+import { useEffect } from 'react'
+import Posts from '../../components/Posts/Posts'
+import ReactPaginate from 'react-paginate'
+import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/ComponentLoading'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router'
 const listClassify = [
   
   {
@@ -47,14 +53,86 @@ const listClassify = [
 ]
 
 const Search = props => {
-  const [value,SetValue] = useState(null)
+  const history = useNavigate();
+  const [value,SetValue] = useState("")
   const [Products,setProducts] = useState(null);
+  const [keywords,setKeywords] = useState(null);
+
+  // ---------------------handle page-------------------------------// 
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]); // product aray
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(8);
+
+  const [currentPosts , setCurrentPosts] = useState([]) //post Array
+  const [lenghtPage,setLeghtPage] = useState(0)
+
+  const hanleCurrentPosts = (Products)=>{
+    const indexOfLastPost = Number(currentPage * postsPerPage);
+    const indexOfFirstPost = Number(indexOfLastPost - postsPerPage);
+    const newList =  Products.slice(indexOfFirstPost , indexOfLastPost);
+    setCurrentPosts(newList)
+    console.log(newList);
+   }
+   // set new number index page +1
+   const handlePageClick = async (data) => {
+    let initPage = data.selected + 1;
+    await setCurrentPage(initPage)
+  };
+  //  ----------------------------------------------------
+  useEffect(()=>{
+    if(posts.length>0){
+      hanleCurrentPosts(posts)
+       // scroll to the top
+      }
+      window.scrollTo(0, 0)
+  },[posts,currentPage])
+
+  // setNewPort
+  useEffect(()=>{
+    hanleCurrentPosts(posts)
+    setLeghtPage(Math.ceil(posts.length/postsPerPage))
+  },[posts])
+
+
+//--------------------------------------------------------------//
 
   const handleSubmit = async(keywords)=>{
-      const data = await searchProduct(keywords,null,null);
-      if(data.success == true){
-        setProducts(data.payload);
+      if(keywords == ""){
+        setPosts([])
+        return;
       }
+      const data = await searchProduct(keywords,null,null);
+      setKeywords(keywords);
+      if(data.success == true && data.payload.length > 0){
+        setProducts(data.payload);
+        setPosts(data.payload)
+      }else{
+        toast.error('Sản phẩm không tồn tại ! ', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          toast('🦄 Cùng nhau tìm kiếm sản phẩm khác nhé ', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+            setProducts([]);
+            setPosts([])
+      }
+      SetValue("")
+      setCurrentPage(1)
       console.log("data",data);    
   }
 
@@ -62,6 +140,7 @@ const Search = props => {
     const data = await classifyProduct(Classify );
     console.log("classifyProduct",data)
   }
+  console.log("PPPPs",posts)
   return (
     <div className='Search'>
       <div className="container">
@@ -80,67 +159,87 @@ const Search = props => {
                 <i class='bx bx-search'></i>
               </button>
           </div>
-        </div>
-        <div className="Search__bottom">
-          <Section>
-            <SectionTitle>
-              Sản Phẩm Đề Suất 
-            </SectionTitle>
-            <SectionBody>
-              <Grid
-                col={5}
-                mdCol={2}
-                smCol={1}
-                gap={20}
-              > 
-                {
-                  listClassify.map(((item,index)=>{
-                    return(
-                      <div 
-                        className='Search__opinion'
-                        key={index}
-                        onClick={()=>handleClassify(item.payload)}
-                      >
-                        <img src={item.image} alt="" />
-                        <h2>{item.title}</h2>
-                      </div>
-                    )
-                  }))
-                }
-              </Grid> 
-            </SectionBody>
-          </Section>
-          <Section>
-            <SectionTitle>
-              Sản Phẩm Đề Suất 
-            </SectionTitle>
-            <SectionBody>
-              <Grid
-                col={5}
-                mdCol={2}
-                smCol={1}
-                gap={20}
-              > 
-                {
-                  listClassify.map(((item,index)=>{
-                    return(
-                      <div 
-                        className='Search__opinion'
-                        key={index}
-                        onClick={()=>handleClassify(item.payload)}
-                      >
-                        <img src={item.image} alt="" />
-                        <h2>{item.title}</h2>
-                      </div>
-                    )
-                  }))
-                }
-              </Grid> 
-            </SectionBody>
-          </Section>
-        </div>
+          
+
+          </div>
+          <div className= {`Search__warrper ${posts.length == 0 ? "" :"active"}`}>
+            <div className={`Search__View ${posts.length == 0 ? "" :"active"}`}>
+                <Section>
+                <div className="Search__View__content">
+                  <SectionTitle>
+                      {`Kết quả tìm kiếm : ${keywords}`}
+                  </SectionTitle>
+                  {
+                        Posts.length > 0 
+                        ? <Posts posts={currentPosts}/>
+                        : Array(8)
+                        .fill(0)
+                        .map((item,index)=>{
+                          return(
+                            <ComponentLoading key={index}/>
+                          )
+                        })
+                  }
+                </div>
+                <ReactPaginate
+                        previousLabel={<i class='bx bx-chevron-left'></i>}
+                        nextLabel={<i class='bx bx-chevron-right'></i>}
+                        breakLabel={"..."}
+                        pageCount={lenghtPage}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={3}
+                        onPageChange={handlePageClick}
+                        containerClassName={"Product__Page"}
+                        pageClassName={"Product__Page__item"}
+                        pageLinkClassName={"Product__Page__link"}
+                        previousClassName={"Product__Page__item"}
+                        previousLinkClassName={"Product__Page__link"}
+                        nextClassName={"Product__Page__item"}
+                        nextLinkClassName={"Product__Page__link"}
+                        breakClassName={"Product__Page__item"}
+                        breakLinkClassName={"Product__Page__link"}
+                        activeClassName={"active"}
+                      />
+              </Section>
+            </div>
+            
+                  
+          <div className={`Search__bottom ${posts.length == 0 ? "" :"active"}`}>
+            <Section>
+              <SectionTitle>
+                Sản Phẩm Đề Suất 
+              </SectionTitle>
+              <SectionBody>
+                <Grid
+                  col={5}
+                  mdCol={2}
+                  smCol={1}
+                  gap={20}
+                > 
+                  {
+                    listClassify.map(((item,index)=>{
+                      return(
+                        <div 
+                          className='Search__opinion'
+                          key={index}
+                          onClick={()=>handleClassify(item.payload)}
+                        >
+                          <img src={item.image} alt="" />
+                          <h2>{item.title}</h2>
+                        </div>
+                      )
+                    }))
+                  }
+                </Grid> 
+              </SectionBody>
+            </Section>
+          </div>
+          </div>
+            
       </div>
-    </div>
+       
+      </div>
+    
   )
 }
 

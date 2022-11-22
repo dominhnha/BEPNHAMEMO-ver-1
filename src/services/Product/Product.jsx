@@ -225,11 +225,13 @@ export const searchProduct = async(queryText,fieldName,proviso)=>{
     }
     
     else if(fieldName === null && proviso === null && queryText!=null) {
-        console.log("ee")
+        queryText.toLowerCase();
         return await getDocs(query(colRef,
-            where('NameProduct','>=', `${queryText}`)
-            ,where('NameProduct','<=', `${queryText + '\uf8ff'}` )
-            ,orderBy('NameProduct')   
+           
+            where('NameProduct', '>=', queryText)
+            ,where('NameProduct', '<=', queryText +  '\uf8ff')
+           
+            
         ))
             .then(async(docs)=>{
                 let ListProduct = [];

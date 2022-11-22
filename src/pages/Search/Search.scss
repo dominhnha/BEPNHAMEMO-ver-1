@@ -102,4 +102,15 @@
             }
         }
     }
+    &__View{
+        max-height:0px;
+            transition:max-height 0.5s;
+            overflow:hidden;
+    }   
+    &__View.active{
+        max-height: 100vh;
+        @include tablet{
+            max-height: max-content;
+        }
+    }
 }

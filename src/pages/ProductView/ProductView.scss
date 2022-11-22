@@ -97,6 +97,7 @@
         opacity: 1;
         width: 100%;
         height: 100px;
+        border: 2px solid #fffdfc;
         
     }
    
@@ -105,8 +106,9 @@
     }
     .slider__thumbs .swiper-slide-thumb-active .slider__image {
        
-        filter: contrast(200%);
+        // filter: contrast(200%);
         border-radius: 8px;
+        border: 2px solid #ff8b04;
         transition: all 0.2s ease;
         box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     }
