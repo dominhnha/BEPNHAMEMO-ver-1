@@ -1,7 +1,9 @@
 import {db} from '../../Firebase__config'
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, setDoc, updateDoc } from "firebase/firestore";
-import { async } from '@firebase/util';
-import { set } from 'firebase/database';
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { AddBestSell, GetNameProduct, GetPriceProduct, GetProductById } from '../Product/Product';
+import { GetDiscountByID, GetPercentDiscountByID } from './Discount';
+import { AddPurchaseHistory } from './PurchaseHistory';
+
 
 const CollectionName = "User"
 
@@ -108,4 +110,49 @@ export const setNewCart = async(uid,listProduct)=>{
         }
     })
 }
+//PurchaseHistory
+export const AddPurchaseHistoryForUser = async(uid,pid,did,quantity) =>{
+    const NameProduct = await GetNameProduct(pid);
+    const PriceProduct = await GetPriceProduct(pid);
+    const Discount = await GetPercentDiscountByID(did);
+    const docRef = doc(db, CollectionName, uid);
+    const colRef = collection(docRef, "PurchaseHistoryForUser");
+    const initPur = {
+        Item:[{
+            Pid:pid,
+            NameProduct:NameProduct,
+            PriceProduct:PriceProduct,
+            Quantity:quantity,
 
+        }],
+        Discount:Discount,
+        Total:"",
+        DayPurchased:serverTimestamp(),
+    }
+    
+    await AddBestSell(pid,quantity);
+    await AddPurchaseHistory(uid,addDoc(colRef,initPur).id);
+    
+}
+export const GetPurchaseHistoryByUser=async(uid,uPid)=>{
+    const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists())
+        return await docSnap.data();
+    return{
+        success: false,
+        payload:"No Purchase History"
+    }
+}
+
+//Get quantity product
+export const GetQuantity=async(uid,uPid)=>{
+    const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
+    const docSnap = await getDoc(docRef);
+    if(docSnap.exists())
+        return await docSnap.data().Item;
+    return{
+        success: false,
+        payload:"No Purchase History"
+    }
+}
