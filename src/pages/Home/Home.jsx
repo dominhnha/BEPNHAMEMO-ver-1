@@ -67,43 +67,33 @@ const Home = props => {
     useEffect(()=>{
       const getData = async () => {
         try{
-          const status = {
-              user:true,
-              discount:true,
+          const Cart = {
+            Email:"minhtu.kun@gmail.com",
+            Phone:"0345116901",
+            Address:"Hoang Dieu",
+            Payments:"QR",
+            Total:"",
+            PriceDiscount:"",
+            firstname:"Tran",
+            lastname:"Minh Tu"
           }
-          const Cart = [{
+          const ListProduct = [{
             pid:"6lyk7W5ubcLF4DRu2hlR",
             quantity:2
-          },
-          {
+          },{
             pid:"7bqHI9FKm8BLfoEvVYVW",
             quantity:3
-          },
-          {
+          },{
             pid:"AkTlxXQVhTfD3M2qGOYM",
-            quantity:4
-          },
-          {
-            pid:"GndUpGyC8fOy2hdDtkBu",
             quantity:5
-          }
-          ,
-          {
+          },{
+            pid:"GndUpGyC8fOy2hdDtkBu",
+            quantity:6
+          },{
             pid:"Kdsq332kX7tmRltJuUdD",
             quantity:1
-          }
-          ,
-          {
-            pid:"QN2QqV40L7rF0FsLqZc5",
-            quantity:7
-          }
-          ,
-          {
-            pid:"QdFElby7BrpyLHyihUs2",
-            quantity:6
-          }
-        ]
-        await AddPurchaseHistoryForUser("3VTxBjyVnqyYCN0uTXVT", Cart,status);
+          }]
+        await AddPurchaseHistoryForUser("check",false, Cart,ListProduct);
           // const BestSell = GetBestsellProduct(5)
           // console.log(BestSell)
         }catch(e){
