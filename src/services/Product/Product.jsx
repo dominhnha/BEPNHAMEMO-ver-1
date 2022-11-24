@@ -1,5 +1,5 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, Timestamp,where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, increment, limit, orderBy, query, setDoc, Timestamp,updateDoc,where } from "firebase/firestore";
 
 const CollectionName = "Product"
 
@@ -106,10 +106,12 @@ export const GetAllProduct = async() => {
 }
 //Classify product
 export const classifyProduct = async(ClassifyName) =>{
-    console.log(ClassifyName);
+    if(ClassifyName == null){
+        return await GetAllProduct();
+    }
     const colRef = collection(db,CollectionName);
     return await getDocs(query(colRef,
-        where("Classify","==",`${ClassifyName}`)     
+         where("Classify","==",`${ClassifyName}`)
     ))
     .then(async(docs)=>{
         console.log(docs)
@@ -163,41 +165,7 @@ export const sortProduct = async(name = "", proviso = "") =>{
 }
 
 
-//product search
-// export const searchProduct = async(queryText,name, proviso)=>{
-//     const colRef = collection(db,CollectionName);
-//     return await getDocs(query(colRef,
-//         orderBy(`${name}`, `${proviso}`)
-//         ,where(`${name}`,'>=', `${queryText}`)
-//         ,where(`${name}`,'<=', `${queryText + '\uf8ff'}` ))
-//         )        
-//         .then(async(docs)=>{
-//             console.log("docs",docs)
-//             let ListProduct = [];
-//             docs.forEach(item=>{
-//                 ListProduct.push({
-//                     Pid:item.id,
-//                     Info:item.data()
-//                 })
-//             })
-//             return {
-//                 success: true,
-//                 payload:ListProduct
-//             }
-//         })
-//         .catch(err => {
-//             return {
-//                 success: false,
-//                 payload:err
-//             }
-//         });
-// }
 
-// get by sort
-//name = PriceProduct,NameProduct, QuantityProduct
-//proviso = desc/asc
- // desc =  Decrease
- // asc = Ascending 
 export const searchProduct = async(queryText,fieldName,proviso)=>{
     const colRef = collection(db,CollectionName);
     if(queryText === null){
@@ -282,4 +250,99 @@ export const searchProduct = async(queryText,fieldName,proviso)=>{
             });
     }
    
+}
+
+//Add best sell products
+export const AddBestSell=async(pid,quantity)=>{
+    const docRef = doc(db,"BestSellProduct",pid);
+    const docSnap = await getDoc(docRef);
+    let infoProduct = await GetProductById(pid);
+    if(docSnap.exists()){
+await updateDoc(docRef,{
+        Pid:pid,
+        Info:infoProduct.Info,
+        QuantitySold: increment(quantity)
+        })
+    }else{
+    const initBestSell = {
+        Pid:pid,
+        Info:infoProduct.Info,
+        QuantitySold:quantity,
+    } 
+    await setDoc(docRef,initBestSell);
+}
+}
+//Best sell Product
+export const GetBestsellProduct = async(number)=>{
+    const colRef = collection(db, "BestSellProduct");
+    return await getDocs(query(colRef,orderBy("QuantitySold","desc"),limit(number)))
+    .then(async(docs)=>{
+        console.log(docs)
+        let ListProduct =[];
+        docs.forEach(item=>{
+            ListProduct.push({
+                Info:item.data().Info
+            })
+        })
+        return{
+            success:true,
+            payload:ListProduct
+        }
+    })
+    .catch((err)=>{
+        return{
+            success:false,
+            payload:err,
+        }
+    })
+
+}
+
+//Get name Product
+export const GetNameProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let NameProduct = "";
+    if(docSnap.exists()){
+        NameProduct = docSnap.data().NameProduct;
+        return await NameProduct;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
+}
+//Get PriceProduct
+export const GetPriceProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let PriceProduct = "";
+    if(docSnap.exists()){
+        PriceProduct = docSnap.data().Price;
+        return PriceProduct;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
+}
+//Get Quantity Product By it
+export const GetQuantityProduct = async(pid)=>{
+    const docRef = doc(db, CollectionName,pid);
+    const docSnap = await getDoc(docRef);
+    let Quantity = "";
+    if(docSnap.exists()){
+        Quantity = docSnap.data().Quantity;
+        return Quantity;
+    }
+    else{
+        return{
+            success: false,
+            payload:"No product"
+        }
+    }
 }

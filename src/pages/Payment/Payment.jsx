@@ -15,12 +15,17 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
+import  { AuthContext } from '../../contexts/AuthContextProvider';
+import { AddPurchaseHistoryForUser } from '../../services/Authencation/User';
+ 
 const options = [
   { value: 'advance', label: 'Thanh toán trước khi nhận hàng' },
   { value: 'later', label: 'Thanh toán sau khi nhận hàng' },
 ]
 const Payment = props => {
   const { Payment,Paymentdispatch} = useContext(PaymentContext);
+  
+  const {Authur,dispatch} = useContext(AuthContext);
   const [Total,setTotal] = useState(0);
   useEffect(()=>{
     if(Payment.success == true && Payment.payload.length > 0){
@@ -32,7 +37,7 @@ const Payment = props => {
       setTotal(tmp);
     }
   },[Payment])
-
+  console.log("",Authur)
   const formik = useFormik({
     initialValues: {
       emailOrPhoneNumber: "",
@@ -92,6 +97,20 @@ const Payment = props => {
               });
 
           }
+          if(Authur.success == true && Payment.success == true){
+            const initCart = Payment.payload.map(item=>{
+
+              const initItem =  {
+                Pid:item.Pid,
+                Quantity:item.Quantity
+              }
+              return initItem  
+            }) 
+            console.log("s",initCart)
+            await AddPurchaseHistoryForUser(Authur.payload.uid,initCart,"5953PoSr4iVdyRKpBXAG")
+          }else{
+            // authr false code here 
+          }
           // code here
           console.log(values.emailOrPhoneNumber,values.address, values.delivery)
           console.log(Payment.payload)
@@ -107,7 +126,7 @@ const Payment = props => {
             theme: "light",
             });
         }
-        
+       // AddPurchaseHistoryForUser
       },[Payment]
     ) 
   });

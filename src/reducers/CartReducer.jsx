@@ -35,6 +35,7 @@ export const CartReducer = (state, action) =>{
         case CART__UPDATA:{
             //payload == new Product
             let check = false;
+            console.log("cheker",payload)
             const curCart = state.payload.map(item =>{
                 if(item.Pid === payload.Pid){
                     check = true;

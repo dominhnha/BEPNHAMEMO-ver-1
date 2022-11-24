@@ -6,7 +6,7 @@ import {AuthContext} from '../../contexts/AuthContextProvider';
 import {  AddUserAuthencation,SiginUserAuthencation} from '../../services/Authencation/Authencation';
 import { async } from '@firebase/util';
 import {  AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
-import { AddProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
+import { AddProduct, GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
 import Slider from '../../components/Slider/Slider';
 import ProductCand from '../../components/ProductCand/ProductCand';
 import Grid from '../../components/Grid/Grid';
@@ -19,68 +19,38 @@ const Home = props => {
   
   const {Authur,dispatch} = useContext(AuthContext);
   const [newProduct,setNewProduct] = useState([]);
-  const [bestSaleProduct,setBestSaleProduct] = useState([]);
-  // useEffect(()=>{
-  //   console.log('Home: ')
-  //   const uploadUser = ()=>{
-  //        dispatch({
-  //          type:AUTH__SET,
-  //          payload:{
-  //              user:{
-  //                  uid:"#3333",
-  //                  user:{
-  //                   name:"minh nhat",
-  //                 },        
-  //              }
-  //          }
-  //      })
-  //     }
-  //     uploadUser();
-  //   },[])
-    
+  const [bestSale,setBestSale] = useState([]);
+
+
  
-    const login = useCallback(async()=>{
-      const user = {
-        email:"minhNhat11@gmail.com",
-        password:"111111",
-      }
-      const data = await GetProductById("l6jV6gk5Mprw9wVKBWef");
-      
-      console.log(data);
-      
-    })
-    // useEffect(()=>{
-    //   const getData = async()=>{
-    //     // const data = await setNewCart("etHlUPkyCYOyf3ecJ04brGuwM232",[
-    //     //   {Number:2,Pid:"QN2QqV40L7rF0FsLqZc5"}
-    //     // ]);
-    //     const data = await GetToCart("etHlUPkyCYOyf3ecJ04brGuwM232");
-    //     console.log("data",data)
-        
-        
-    //   }
-    //   getData()
-    // },[])
+    
     useEffect(()=>{
-      const getData = async () => {
-        try{
-          // const data = await sortProduct("Quantity","asc");
-          // const data = await searchProduct("K");
-          const data =await searchProduct("K","NameProduct","asc")
-          console.log("data1",data);
-        }catch(e){
-          console.log(e);
+      try{
+        const getData = async()=>{
+          const data = await getNewProduct(8);
+          if(data.success) setNewProduct(data.payload);
+          console.log("1",data);
         }
+        getData()
+
+      } catch(e){
+        console.log(e);
       }
-      getData()
+      
     },[])
+
     useEffect(()=>{
-      const getData = async()=>{
-        const data = await getNewProduct(7);
-        if(data.success) setNewProduct(data.payload);
-        
+      try{
+        const getData = async()=>{
+          const data = await GetBestsellProduct(3);
+          console.log("new",data)
+          if(data.success) setBestSale(data.payload);
+        }
+        getData()
+      }catch(e){
+        console.log(e)
       }
-      getData()
+      
     },[])
    console.log(newProduct)
     return (
@@ -140,7 +110,7 @@ const Home = props => {
           <div className="Home__section">
               <div className="Home__section__top">
                   <div className="Home__section__wrapper">
-                      <h2>Sản phẩm mới</h2>
+                      <h2>Sản bán chạy</h2>
                       <Link to={"/Product"}>
                         <Button>Xem Thêm</Button>
                       </Link>  
@@ -155,8 +125,8 @@ const Home = props => {
                   gap={20}
                 > 
                   {
-                    bestSaleProduct.length > 0
-                    ? newProduct.map(item=>{
+                    bestSale.length > 0
+                    ? bestSale.map(item=>{
                       return(
                         <ProductCand
                           key={v4()}

@@ -9,6 +9,7 @@ import Event from '../../assets/Img/event.jpg'
 import Pastry from '../../assets/Img/Pastry.jpg'
 import Socola from '../../assets/Img/Socola.jpg'
 import SaltyCake from '../../assets/Img/Salty-cake.jpg'
+import All from '../../assets/Img/All1.jpg'
 import { classifyProduct, searchProduct } from '../../services/Product/Product'
 import { v4 } from 'uuid'
 import { useEffect } from 'react'
@@ -18,7 +19,12 @@ import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router'
 const listClassify = [
-  
+  {
+    title:"Toàn Bộ",
+    payload:null,
+    field:"Classify",
+    image:All,
+  },
   {
     title:"Kẹo",
     payload:"Candy",
@@ -38,7 +44,7 @@ const listClassify = [
     image:SaltyCake,
   },
   {
-    title:"Socola",
+    title:"Chocolate",
     payload:"Chocolate",
     field:"Classify",
     image:Socola,
@@ -136,9 +142,16 @@ const Search = props => {
       console.log("data",data);    
   }
 
-  const handleClassify = async(Classify)=>{
-    const data = await classifyProduct(Classify );
-    console.log("classifyProduct",data)
+  const handleClassify = async(Classify,name)=>{
+    try{
+      const data = await classifyProduct(Classify);
+      setProducts(data.payload);
+      setPosts(data.payload)
+      setKeywords(name)
+    }catch(e){
+      console.log(e)
+    }
+    
   }
   console.log("PPPPs",posts)
   return (
@@ -211,10 +224,10 @@ const Search = props => {
               </SectionTitle>
               <SectionBody>
                 <Grid
-                  col={5}
+                  col={6}
                   mdCol={2}
-                  smCol={1}
-                  gap={20}
+                  smCol={2}
+                  gap={10}
                 > 
                   {
                     listClassify.map(((item,index)=>{
@@ -222,9 +235,9 @@ const Search = props => {
                         <div 
                           className='Search__opinion'
                           key={index}
-                          onClick={()=>handleClassify(item.payload)}
+                          onClick={()=>handleClassify(item.payload,item.title)}
                         >
-                          <img src={item.image} alt="" />
+                          <img loading="lazy" src={item.image} alt="" />
                           <h2>{item.title}</h2>
                         </div>
                       )

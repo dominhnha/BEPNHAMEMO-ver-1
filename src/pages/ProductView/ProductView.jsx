@@ -93,7 +93,7 @@ const ProductView = props => {
     }catch(e){
       console.log(e)
     }
-  },[Cart,product])
+  },[Cart,product,quantity])
   //--------------- user payment product----------------- 
   const handlePayment = useCallback((e)=>{
     try{

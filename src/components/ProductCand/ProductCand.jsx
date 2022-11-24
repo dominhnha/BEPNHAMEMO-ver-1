@@ -24,6 +24,7 @@ const ProductCand = props => {
         
         <div className="ProductCand__top">
             {
+                //
                 Image 
                 ? <img loading="lazy" className='ProductCand__img' src={Image} alt="" />
                 : <Skeleton height={352}></Skeleton>
