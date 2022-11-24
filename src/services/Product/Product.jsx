@@ -1,11 +1,11 @@
 import {db} from '../../Firebase__config'
 import { addDoc, collection, doc, endAt, getDoc, getDocs, increment, limit, orderBy, query, serverTimestamp, setDoc, startAt, Timestamp,updateDoc,where } from "firebase/firestore";
-import { GetDiscountByID } from '../Authencation/Discount';
+import {  GetPercentDiscountByID } from '../Authencation/Discount';
 const CollectionName = "Product"
 
 export const AddProduct = async() => {
     const colRef = collection(db, CollectionName);
-    const Discount = await GetDiscountByID(colRef.id);
+    const Discount = await GetPercentDiscountByID(colRef.id);
     const NewProduct = {
         NameProduct: "",
         DescriptionProduct: "",

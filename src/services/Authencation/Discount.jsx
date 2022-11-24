@@ -60,26 +60,7 @@ export const Discount30 = async(pid)=>{
     }
     return await setDoc(doc(db,"Discount 30% Product",pid),initDiscount30)
 }
-//Get discount by id
-export const GetDiscountByID = async(did) =>{
-    const docRef = doc(db,CollectionName,did);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists()){
-        return{
-            success: true,
-            payload: {
-                Did:did,
-                Info:docSnap.data(),
-            }
-        }
-    }
-    else{
-        return{
-            success:false,
-            payload:"No such document!",
-    }
-}
-}
+
 //Get PercentDiscount by id
 export const GetPercentDiscountByID = async(did) =>{
     const docRef = doc(db,CollectionName,did);
@@ -153,13 +134,15 @@ export const CheckDiscount = async(did) =>{
     const Time = new Date();
     const now = Time.getTime();
     const quantity = await GetQuantityDiscount(did);
+    let PercentDiscount = await GetPercentDiscountByID(did);
     if((now>=MFG && now<=EXP)&&quantity>0){
-        return true;
+        return PercentDiscount;
     }
     else{
         return false;
     }
 }
+
 //-1 discount add to button pay 
 export const IncrementDiscount = async(did) =>{
     const docRef = doc(db,CollectionName,did);
