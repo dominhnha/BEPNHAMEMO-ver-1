@@ -342,7 +342,7 @@ await updateDoc(docRef,{
 //Best sell Product
 export const GetBestsellProduct = async(number)=>{
     const colRef = collection(db, "BestSellProduct");
-    return await getDocs(query(colRef,orderBy("Quantity", "desc"),limit(number)))
+    return await getDocs(query(colRef,orderBy("QuantitySold", "desc"),limit(number)))
     .then(async(docs)=>{
         let ListProduct =[];
         docs.forEach(item=>{
@@ -363,4 +363,3 @@ export const GetBestsellProduct = async(number)=>{
     })
 
 }
-//
