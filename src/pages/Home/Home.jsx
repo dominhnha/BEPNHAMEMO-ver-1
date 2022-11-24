@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-
+import {db} from '../../Firebase__config'
 import {AUTH__SET} from '../../reducers/type'
 import {AuthContext} from '../../contexts/AuthContextProvider';
 import {  AddUserAuthencation,SiginUserAuthencation} from '../../services/Authencation/Authencation';
 import { async } from '@firebase/util';
 import {  AddPurchaseHistoryForUser, AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
-import { AddProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
+import { AddProduct, GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
 import Slider from '../../components/Slider/Slider';
 import ProductCand from '../../components/ProductCand/ProductCand';
 import Grid from '../../components/Grid/Grid';
@@ -15,6 +15,9 @@ import Button from '../../components/Button/Button/Button';
 import { Link } from 'react-router-dom';
 import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/ComponentLoading';
 import "./Home.scss"
+import { CheckDiscount, GetExp, GetMfg, IncrementDiscount } from '../../services/Authencation/Discount';
+import { serverTimestamp, Timestamp } from 'firebase/firestore';
+import { AddPurchaseHistory } from '../../services/Authencation/PurchaseHistory';
 const Home = props => {
   
   const {Authur,dispatch} = useContext(AuthContext);
@@ -64,17 +67,45 @@ const Home = props => {
     useEffect(()=>{
       const getData = async () => {
         try{
-          // const data = await sortProduct("Quantity","asc");
-          // const data = await searchProduct("K");
-          //const data =await searchProduct(null,"NameProduct","asc")
-          const data = await AddPurchaseHistoryForUser(
-            "3VTxBjyVnqyYCN0uTXVT"
-            ,[{pid: "6lyk7W5ubcLF4DRu2hlR",quantity: 101}
-            ,{pid:"7bqHI9FKm8BLfoEvVYVW", quantity: 10}
-            ,{pid: "AkTlxXQVhTfD3M2qGOYM", quantity:15}]
-            ,"5953PoSr4iVdyRKpBXAG"
-            );
-          console.log("data1",data);
+          const status = {
+              user:true,
+              discount:true,
+          }
+          const Cart = [{
+            pid:"6lyk7W5ubcLF4DRu2hlR",
+            quantity:2
+          },
+          {
+            pid:"7bqHI9FKm8BLfoEvVYVW",
+            quantity:3
+          },
+          {
+            pid:"AkTlxXQVhTfD3M2qGOYM",
+            quantity:4
+          },
+          {
+            pid:"GndUpGyC8fOy2hdDtkBu",
+            quantity:5
+          }
+          ,
+          {
+            pid:"Kdsq332kX7tmRltJuUdD",
+            quantity:1
+          }
+          ,
+          {
+            pid:"QN2QqV40L7rF0FsLqZc5",
+            quantity:7
+          }
+          ,
+          {
+            pid:"QdFElby7BrpyLHyihUs2",
+            quantity:6
+          }
+        ]
+        await AddPurchaseHistoryForUser("3VTxBjyVnqyYCN0uTXVT", Cart,status);
+          // const BestSell = GetBestsellProduct(5)
+          // console.log(BestSell)
         }catch(e){
           console.log(e);
         }

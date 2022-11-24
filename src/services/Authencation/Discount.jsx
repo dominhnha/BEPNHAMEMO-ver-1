@@ -1,5 +1,5 @@
 import {db} from '../../Firebase__config'
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, Timestamp } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, Timestamp, increment } from "firebase/firestore";
 
 const CollectionName = "Discount";
 
@@ -11,8 +11,8 @@ export const AddDiscount = async() =>{
         NameDiscount:"",
         DescriptionDiscount:"",
         PercentDiscount:"",
-        Exp: await Timestamp.fromDate(new Date("December 10,1900")),
-        Mfg: await Timestamp.fromDate(new Date("December 10,1900")),
+        Exp: await Timestamp.fromDate(new Date("December 10,2022")),
+        Mfg: await Timestamp.fromDate(new Date("December 10,2022")),
         Quantity:"",
     }
     return await addDoc(CollectionRef, initDiscount)
@@ -30,7 +30,10 @@ export const AddDiscount = async() =>{
     })
 };
 
-
+/*
+EXP: expiry date
+MFG: manufacturing date
+ */
 //Discount 10% product
 export const Discount10 = async(pid)=>{
     const initDiscount10={
@@ -100,7 +103,7 @@ export const GetQuantityDiscount = async(did) =>{
     const docSnap = await getDoc(docRef);
     let Quantity = "";
     if(docSnap.exists()){
-        Quantity = await docSnap.data().PercentDiscount;
+        Quantity = await docSnap.data().Quantity;
         return Quantity;
     }
     else{
@@ -109,5 +112,59 @@ export const GetQuantityDiscount = async(did) =>{
             payload:"No such document!",
     }
 }
+}
+//Get exp
+export const GetExp = async(did) =>{
+    const docRef = doc(db,CollectionName,did);
+    const docSnap = await getDoc(docRef);
+    let Exp = "";
+    if(docSnap.exists()){
+        Exp = await docSnap.data().Exp.toMillis();
+        return Exp;
+    }
+    else{
+        return{
+            success:false,
+            payload:"No such document!",
+    }
+}
+}
+//Get mfg
+export const GetMfg = async(did) =>{
+    const docRef = doc(db,CollectionName,did);
+    const docSnap = await getDoc(docRef);
+    let Mfg = "";
+    if(docSnap.exists()){
+        Mfg = await docSnap.data().Mfg.toMillis();
+        return Mfg;
+        
+    }
+    else{
+        return{
+            success:false,
+            payload:"No such document!",
+    }
+}
+}
+//Check discount
+export const CheckDiscount = async(did) =>{
+    const MFG = await GetMfg(did);
+    const EXP = await GetExp(did);
+    const Time = new Date();
+    const now = Time.getTime();
+    const quantity = await GetQuantityDiscount(did);
+    if((now>=MFG && now<=EXP)&&quantity>0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+//-1 discount add to button pay 
+export const IncrementDiscount = async(did) =>{
+    const docRef = doc(db,CollectionName,did);
+    await updateDoc(docRef,{
+        Quantity:(await GetQuantityDiscount(did)-1).toString(),
+    })
 }
 
