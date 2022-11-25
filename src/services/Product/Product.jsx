@@ -1,36 +1,48 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, endAt, getDoc, getDocs, increment, limit, orderBy, query, serverTimestamp, setDoc, startAt, Timestamp,updateDoc,where } from "firebase/firestore";
-import { GetDiscountByID } from '../Authencation/Discount';
+import { addDoc, collection, doc, getDoc, getDocs, increment, limit, orderBy, query, serverTimestamp, setDoc,updateDoc,where } from "firebase/firestore";
+
 const CollectionName = "Product"
 
-export const AddProduct = async() => {
-    const colRef = collection(db, CollectionName);
-    const Discount = await GetDiscountByID(colRef.id);
-    const NewProduct = {
-        NameProduct: "",
-        DescriptionProduct: "",
-        Ingerdient: "",
-        Price: "",
-        Quantity: "",
-        ImageIdProduct: "",
-        exp: await Timestamp.fromDate(new Date("December 10,1900")),
-        mfg: await Timestamp.fromDate(new Date("December 10,1900")),
-        Classify: "",
-        DayProduce: serverTimestamp(),
-        Disocount:Discount,
+export const AddProduct = async(newProduct) => {
+    const {
+        NameProduct,
+        DescriptionProduct,
+        Ingerdient,
+        Price,
+        Quantity,
+        ImageIdProduct,
+        exp,
+        mfg,
+        Classify,
+        Disocount,
+    } = newProduct;
+    const initNewProduct ={
+        NameProduct: NameProduct,
+        DescriptionProduct:DescriptionProduct,
+        Ingerdient:Ingerdient,
+        Price:Price,
+        Quantity:Quantity,
+        ImageIdProduct:ImageIdProduct,
+        exp:exp,
+        mfg:mfg,
+        Classify:Classify,
+        DayProduce:serverTimestamp(),
+        Disocount:Disocount,
+        
     }
-    return await addDoc(colRef,NewProduct)
-    .then(e=>{
-        return {
-            success: true,
-            payload:NewProduct,
-        }
-    })
-    .catch((error) => {
-        return {
-            success: false,
-            payload:error,
-        }
+    const initNameProduct={
+        NameProduct:NameProduct,
+    }
+    const n = newProduct.NameProduct.toLowerCase();
+    let array = [];
+    for(let i=0;i<=n.length;i++) {
+        array.push(n.substring(0,i));
+    }
+    const colRef = collection(db, CollectionName);
+    const docSnap = await addDoc(colRef,initNewProduct)
+    await setDoc(doc(db,"NameProduct",docSnap.id),initNameProduct); 
+    await updateDoc(doc(db,"NameProduct",docSnap.id),{
+        NameArray: array,
     })
 };
 // Timestamp cover date by toDate()
@@ -362,4 +374,29 @@ export const GetBestsellProduct = async(number)=>{
         }
     })
 
+}
+
+//Search for Product
+export const SearchProduct = async(querrText)=>{
+    const colRef = collection(db, "NameProduct");
+    return await getDocs(query(colRef,
+        where("NameArray","array-contains",`${querrText.toLowerCase()}`)))
+        .then(async(docs)=>{
+            let ListProduct =[];
+            docs.forEach(item=>{
+                ListProduct.push({
+                    Info: item.id
+                })
+            })
+            return{
+                success:true,
+                payload:ListProduct
+            }
+        })
+        .catch((err)=>{
+            return{
+                success:false,
+                payload:err,
+            }
+        })
 }
