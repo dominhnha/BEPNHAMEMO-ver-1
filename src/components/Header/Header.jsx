@@ -27,8 +27,12 @@ const Header = props => {
       path: '/Product/Search',
     }
     ,{
-      title:'liên hệ',
-      path: '/contact',
+      title:'Sự Kiện',
+      path: '/Event',
+    }
+    ,{
+      title:'Giới Thiệu',
+      path: '/Contact',
     }
     
   ]

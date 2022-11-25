@@ -1,16 +1,22 @@
-import React from 'react'
+import React,{lazy} from 'react'
 import PropTypes from 'prop-types'
 import {Route, Routes} from 'react-router-dom'
 // import Components
-import Home from '../pages/Home/Home'
-import Product from '../pages/Product/Product'
-import ProductView from '../pages/ProductView/ProductView'
-import SignIn from '../pages/SignIn/SignIn'
-import SignUp from '../pages/SignUp/SignUp'
-import Cart from '../pages/Cart/Carts'
-import Payment from '../pages/Payment/Payment'
-import Error from '../pages/Error/Error'
-import Search from '../pages/Search/Search'
+
+
+const Home = React.lazy(() => import('../pages/Home/Home'))
+const Product = React.lazy(() => import('../pages/Product/Product'))
+const ProductView = React.lazy(() => import('../pages/ProductView/ProductView'))
+const SignIn = React.lazy(() => import('../pages/SignIn/SignIn'))
+const SignUp = React.lazy(() => import('../pages/SignUp/SignUp'))
+const Cart = React.lazy(() => import('../pages/Cart/Carts'))
+const Payment = React.lazy(() => import('../pages/Payment/Payment'))
+const Error = React.lazy(() => import('../pages/Error/Error'))
+const Search = React.lazy(() => import('../pages/Search/Search'))
+const Contact = React.lazy(() => import('../pages/Contact/Contact'))
+
+
+
 
 const MainRoutes = props => {
   return (
@@ -31,6 +37,7 @@ const MainRoutes = props => {
           <Route exact path='Cart' element={<Cart/>}></Route>
           
         </Route>
+        <Route exact path='/Contact' element={<Contact/>}></Route>
         {/*  */}
         <Route  path='*' element={<Error/>}></Route>
     </Routes>

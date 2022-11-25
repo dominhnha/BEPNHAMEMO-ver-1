@@ -17,6 +17,8 @@ import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import  { AuthContext } from '../../contexts/AuthContextProvider';
 import { AddPurchaseHistoryForUser } from '../../services/Authencation/User';
+import { CartContext } from '../../contexts/CartContextProvider';
+import { CART__REMOVE } from '../../reducers/type';
  
 const options = [
   { value: 'advance', label: 'Thanh toán trước khi nhận hàng' },
@@ -24,7 +26,7 @@ const options = [
 ]
 const Payment = props => {
   const { Payment,Paymentdispatch} = useContext(PaymentContext);
-  
+  const {Cart,Cartdispatch} = useContext(CartContext);
   const {Authur,dispatch} = useContext(AuthContext);
   const [Total,setTotal] = useState(0);
   useEffect(()=>{
@@ -37,7 +39,9 @@ const Payment = props => {
       setTotal(tmp);
     }
   },[Payment])
+
   console.log("",Authur)
+  console.log("ssssssssssssss",Payment)
   const formik = useFormik({
     initialValues: {
       emailOrPhoneNumber: "",
@@ -59,44 +63,6 @@ const Payment = props => {
       async(values) => {
         try{
           // code is here
-            if(values.emailOrPhoneNumber == ""){
-              toast.error('Vui lòng nhập gmail/số điện thoại của bạn', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              });
-              
-          }
-          if(values.address == ""){
-            toast.error('Vui lòng nhập địa chỉ của bạn', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              });
-          }
-          if(values.delivery == ""){
-            toast.error('Vui lòng chọn phương thức thanh toán', {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              });
-
-          }
           if(Authur.success == true && Payment.success == true){
             const initCart = Payment.payload.map(item=>{
 
@@ -107,10 +73,23 @@ const Payment = props => {
               return initItem  
             }) 
             console.log("s",initCart)
-            await AddPurchaseHistoryForUser(Authur.payload.uid,initCart,"5953PoSr4iVdyRKpBXAG")
+            await AddPurchaseHistoryForUser(Authur.payload.uid,initCart,{
+              user:true,discount:true
+            })
+
+          
           }else{
             // authr false code here 
           }
+          // remove item in cart 
+          Payment.payload.map(item=>{
+            Cartdispatch({
+              type:CART__REMOVE,
+              payload:item.Pid,
+            })
+          })
+
+
           // code here
           console.log(values.emailOrPhoneNumber,values.address, values.delivery)
           console.log(Payment.payload)

@@ -5,13 +5,13 @@ import {CartReducer} from '../reducers/CartReducer'
 export const CartContext = createContext()
 
 const CartContextProvider = ({children}) => {
-    const [Cart,dispatch] = useReducer(CartReducer,{
+    const [Cart,Cartdispatch] = useReducer(CartReducer,{
       success:false,
       payload:[],
     });
     const CartContextData = {
         Cart,
-        dispatch,
+        Cartdispatch,
     }
   return (  
     <CartContext.Provider value={CartContextData}>

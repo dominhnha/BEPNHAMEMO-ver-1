@@ -15,12 +15,12 @@ import "swiper/css/thumbs";
 
 
 // import required modules
-import { FreeMode, Navigation, Thumbs, Mousewheel } from "swiper";
+import { FreeMode, Navigation, Thumbs, Mousewheel, Pagination } from "swiper";
 import ButtonQuantity from '../../components/Button/ButtonQuantity/ButtonQuantity';
 import Button from '../../components/Button/Button/Button';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from "react-toastify";
-import { GetProductById } from '../../services/Product/Product';
+import { classifyProduct, GetProductById } from '../../services/Product/Product';
 import EffectLoanding from '../../components/LoadingSkeleton/EffectLoanding/EffectLoanding';
 import { AddToCart, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
 import Section, { SectionBody, SectionTitle } from '../../components/Section/Section';
@@ -30,26 +30,29 @@ import { AUTH__SET, CART__REMOVE, CART__UPDATA, PAYMENT__UPDATA } from '../../re
 import Cart from '../Cart/Carts';
 import { CartContext } from '../../contexts/CartContextProvider';
 import { PaymentContext } from '../../contexts/PaymentContextProvider';
+import ProductCand from '../../components/ProductCand/ProductCand';
+import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/ComponentLoading';
 
 
 
 const ProductView = props => {
   const history = useNavigate();
-  const {Cart,dispatch} = useContext(CartContext);
+  const {Cart,Cartdispatch} = useContext(CartContext);
   const { Payment,Paymentdispatch} = useContext(PaymentContext);
   const [imagesNavSlider, setImagesNavSlider] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [product,setProduct] = useState(null);
+  const [Classify,setClassify] = useState([]);
    // get Slug by Url
    const {slug} = useParams();
    useEffect(()=>{
     window.scrollTo(0,0);
-   },[])
+   },[product])
   //EffectLoanding
 
+  //call Product API 
   useEffect(()=>{
-    //call data API 
-    const getProduct = async()=>{
+    const getProduct = async(slug)=>{
       try{
         const initProduct =  await GetProductById(slug);
         if(initProduct.success){
@@ -59,10 +62,19 @@ const ProductView = props => {
         console.log(e)
       }
     }
-    getProduct();
-  },[])
-  
-  console.log(product)
+    getProduct(slug);
+  },[slug])
+
+  // get Classify 
+  useEffect(()=>{
+    const getclassify = async()=>{
+      if(product!=null){
+        const data = await classifyProduct(product.Info.Classify);
+        setClassify(data.payload);
+      }
+    }
+    getclassify();
+  },[product])
   //---------------- add to Cart user-------------------- 
   const handleAddToCart = useCallback( async(curCart) =>{
     toast.success(`Thêm thành công 
@@ -78,7 +90,7 @@ const ProductView = props => {
       theme: "light",
       });
     try{
-      dispatch({
+      Cartdispatch({
         type:CART__UPDATA,
         payload:{
             Pid:slug,
@@ -115,7 +127,9 @@ const ProductView = props => {
 
   console.log(slug)
   console.log("Product",product)
+  console.log("C",Classify)
   console.log(Cart)
+  console.log("his",history.name)
 
   
   return (
@@ -137,7 +151,7 @@ const ProductView = props => {
                               direction="vertical"
                               spaceBetween={10}
                               slidesPerView={3}
-                              centeredSlides={true} 
+                              centeredSlides={false} 
                               loop={true} 
                               navigation={{
                                 nextEl: ".slider__next",
@@ -267,14 +281,6 @@ const ProductView = props => {
               <SectionTitle>
                   Thông tin chi tiết sản phẩm
               </SectionTitle>
-             
-              {/* <h2 className="ProductView__infomation__Name">
-                      {
-                        product != null
-                        ? <span>{product.Info.NameProduct}</span>
-                        : <EffectLoanding/>
-                      }
-              </h2> */}
               {
                 product != null
                 ? <ul className="ProductView__expiryday">
@@ -306,10 +312,71 @@ const ProductView = props => {
           <div className="ProductView__more">
             <Section>
                 <SectionTitle>
-                        hello world
+                    Sản phẩm liên quan
                 </SectionTitle>
                 <SectionBody>
-                      
+                    <Swiper
+                      // centeredSlides={true}
+                      pagination={{
+                        type: "fraction",
+                      }}
+                          //navigation={true}
+                      modules={[Pagination, Navigation]}
+                      className="mySwiper"
+                      autoplay={{
+                        "delay": 3500,
+                        "disableOnInteraction": true
+                      }} 
+                      loop={true} 
+                       spaceBetween={40}
+                      // grid={4}
+                      breakpoints = {{
+                              1024: {
+                                  slidesPerView: 3,
+                                  spaceBetweenSlides: 40
+                              },
+                              768: {
+                                  slidesPerView: 2,
+                                  spaceBetweenSlides: 20
+                              },
+                              480: {
+                                  slidesPerView: 1,
+                                  spaceBetweenSlides: 20
+                              },
+                              0:{
+                                  slidesPerView: 1,
+                                  spaceBetweenSlides: 20
+                              }
+                          }}
+                      >
+                        {
+                          Classify.length > 0 
+                          ? Classify.map(item=>{
+                              return(
+                                <SwiperSlide>
+                                  <ProductCand
+                                    key={item.Pid}
+                                    Pid={item.Pid}
+                                    Name={item.Info.NameProduct}
+                                    Description={item.Info.DescriptionProduct}
+                                    Image={item.Info.Image}
+                                    Price={item.Info.Price}
+                                    sale={30}
+                                  />
+                                </SwiperSlide>
+                              )
+                            })
+                          :Array(8)
+                          .fill(0)
+                          .map(item=>{
+                            return(
+                              <SwiperSlide>
+                                <ComponentLoading key={v4()}/>
+                              </SwiperSlide>
+                            )
+                          })
+                        }
+                    </Swiper>
                 </SectionBody>
             </Section>
           </div>

@@ -14,17 +14,17 @@ const Footer = React.lazy(() => import('../components/Footer/Footer'));
 const Loading = React.lazy(() => import('../components/Loading/Loading'));
 
 const Layout = props => {
-  const {Cart,dispatch} = useContext(CartContext);
+  const {Cart,Cartdispatch} = useContext(CartContext);
   // get default cart by local store
   useEffect(()=>{
     const data = JSON.parse( localStorage.getItem("CART"));
     if(data == null){
-      dispatch({
+      Cartdispatch({
         type:CART__SET,
         payload:[]        
       })
     }else{
-      dispatch({
+      Cartdispatch({
         type:CART__SET,
         payload:data        
       })

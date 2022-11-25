@@ -9,6 +9,7 @@ import Event from '../../assets/Img/event.jpg'
 import Pastry from '../../assets/Img/Pastry.jpg'
 import Socola from '../../assets/Img/Socola.jpg'
 import SaltyCake from '../../assets/Img/Salty-cake.jpg'
+import BannerImg from '../../assets/Img/bg-home-2.jpg'
 import All from '../../assets/Img/All1.jpg'
 import { classifyProduct, searchProduct } from '../../services/Product/Product'
 import { v4 } from 'uuid'
@@ -78,7 +79,7 @@ const Search = props => {
     const indexOfFirstPost = Number(indexOfLastPost - postsPerPage);
     const newList =  Products.slice(indexOfFirstPost , indexOfLastPost);
     setCurrentPosts(newList)
-    console.log(newList);
+    
    }
    // set new number index page +1
    const handlePageClick = async (data) => {
@@ -153,27 +154,29 @@ const Search = props => {
     }
     
   }
-  console.log("PPPPs",posts)
+ 
   return (
     <div className='Search'>
       <div className="container">
-        <div className="Search__top">
-          <h2 className="Search__title">
-              Tìm Kiếm Sản Phẩm
-          </h2>
-          <div className="Search__group">
-              <input 
-                type="text"
-                value={value}
-                onChange={(e)=>SetValue(e.target.value)}
-                placeholder="Nhập tên sản phẩm tìm kiếm"
-              />
-              <button onClick={()=>handleSubmit(value)}>
-                <i class='bx bx-search'></i>
-              </button>
+        <div className="Search__top" >
+          <div className="Search__top__warpper">
+            <h2 className="Search__title">
+                Tìm Kiếm Sản Phẩm
+            </h2>
+            <div className="Search__group">
+                <input 
+                  type="text"
+                  value={value}
+                  onChange={(e)=>SetValue(e.target.value)}
+                  placeholder="Nhập tên sản phẩm tìm kiếm"
+                />
+                <button onClick={()=>handleSubmit(value)}>
+                  <i class='bx bx-search'></i>
+                </button>
+            </div>
           </div>
+            <img className='Search__bg' src={BannerImg} alt="" />
           
-
           </div>
           <div className= {`Search__warrper ${posts.length == 0 ? "" :"active"}`}>
             <div className={`Search__View ${posts.length == 0 ? "" :"active"}`}>

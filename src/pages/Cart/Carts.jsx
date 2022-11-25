@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router';
 import {formatNumber } from '../../utils/Format'
 const Carts = props => {
   const history = useNavigate();
-  const {Cart,dispatch} = useContext(CartContext);
+  const {Cart,Cartdispatch} = useContext(CartContext);
   const { Payment,Paymentdispatch} = useContext(PaymentContext);
   const [ListProduct,SetListProduct] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -59,7 +59,7 @@ const Carts = props => {
         progress: undefined,
         theme: "light",
       });
-      dispatch({
+      Cartdispatch({
         type:CART__REMOVE,
         payload:productId
       })
@@ -72,7 +72,7 @@ const Carts = props => {
     // code here
     e.preventDefault() 
     try{
-      dispatch({
+      Cartdispatch({
         type:CART__INCREMENT,
         payload:productId
       })
@@ -86,7 +86,7 @@ const Carts = props => {
     // code here
     e.preventDefault() 
     try{
-      dispatch({
+      Cartdispatch({
         type:CART__DECREMENT,
         payload:productId
       })

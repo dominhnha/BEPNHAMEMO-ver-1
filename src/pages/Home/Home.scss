@@ -1,4 +1,6 @@
 .Home{
+    position: relative;
+    z-index: 3;
     &__section{
         margin: -5px;
         &__top{

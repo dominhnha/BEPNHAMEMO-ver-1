@@ -1,5 +1,8 @@
 @import "../../sass/variables";
 .footer{
+    position: relative;
+    z-index: 3;
+    background-color: white;
     padding: 20px;
     &__cand{
         padding-bottom: 10px;

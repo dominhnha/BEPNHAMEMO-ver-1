@@ -5,11 +5,41 @@
     &__top{
         border-radius: 100px;
         height: 40vh;
-        background-color: #ff8b04;
+        // background-color: #ff8b04;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        min-height: 40vh;
+        background-position: center;
+        padding: 60px 40px;
+
+    }
+    &__top__warpper{
+        position: absolute;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    &__bg{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: block;
+        width: 100%;
+        height: 40vh;
+        object-fit: unset;
+        border-radius: 20px;
+        outline: none;
+        object-fit: cover;
+        z-index: 1;
+            ;
     }
     &__title{
         color: white;
@@ -19,7 +49,10 @@
         border-radius: 8px;
         text-transform: uppercase;
         font-weight: 700;
+        font-family: cursive;
         box-shadow: rgb(0 0 0 / 25%) -3px 3px 1px 0px;
+
+        
     }
     &__group{
         width: 100%;
@@ -27,7 +60,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        min-width: 700px;
         @include mobile{
+            min-width: 350px;
             padding: 5px;
             input{
                 width: 90%;
