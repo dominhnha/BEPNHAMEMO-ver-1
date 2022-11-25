@@ -14,7 +14,6 @@ export const AddProduct = async(newProduct) => {
         exp,
         mfg,
         Classify,
-        Disocount,
     } = newProduct;
     const initNewProduct ={
         NameProduct: NameProduct,
@@ -27,23 +26,23 @@ export const AddProduct = async(newProduct) => {
         mfg:mfg,
         Classify:Classify,
         DayProduce:serverTimestamp(),
-        Disocount:Disocount,
         
     }
-    const initNameProduct={
-        NameProduct:NameProduct,
-    }
-    const n = newProduct.NameProduct.toLowerCase();
-    let array = [];
-    for(let i=0;i<=n.length;i++) {
-        array.push(n.substring(0,i));
-    }
-    const colRef = collection(db, CollectionName);
-    const docSnap = await addDoc(colRef,initNewProduct)
-    await setDoc(doc(db,"NameProduct",docSnap.id),initNameProduct); 
-    await updateDoc(doc(db,"NameProduct",docSnap.id),{
-        NameArray: array,
+    const colRef = collection(db, CollectionName)
+    return await addDoc(colRef,initNewProduct)
+    .then(e=>{
+        return {
+            success: true,
+            payload:initNewProduct,
+        }
     })
+    .catch((error) => {
+        return {
+            success: false,
+            payload:error,
+        }
+    })
+    
 };
 // Timestamp cover date by toDate()
 export const GetProductById = async(pid)=>{
@@ -378,25 +377,20 @@ export const GetBestsellProduct = async(number)=>{
 
 //Search for Product
 export const SearchProduct = async(querrText)=>{
-    const colRef = collection(db, "NameProduct");
-    return await getDocs(query(colRef,
-        where("NameArray","array-contains",`${querrText.toLowerCase()}`)))
-        .then(async(docs)=>{
-            let ListProduct =[];
-            docs.forEach(item=>{
-                ListProduct.push({
-                    Info: item.id
-                })
-            })
-            return{
-                success:true,
-                payload:ListProduct
-            }
+    const colRef = collection(db, CollectionName);
+    const docsSnap = await getDocs(colRef);
+    let ListProduct = []
+    docsSnap.forEach(doc => {
+        ListProduct.push({
+            Pid:doc.id,
+            Info:doc.data()
         })
-        .catch((err)=>{
-            return{
-                success:false,
-                payload:err,
-            }
-        })
+        
+    })
+
+    return ListProduct.filter(function(e){
+        return e.Info.NameProduct.toLowerCase().includes(querrText.toLowerCase())
+        
+    })
+    
 }
