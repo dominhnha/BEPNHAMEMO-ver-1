@@ -150,6 +150,7 @@ const ProductView = props => {
                               onSwiper={setImagesNavSlider}
                               direction="vertical"
                               spaceBetween={10}
+                              
                               slidesPerView={3}
                               centeredSlides={false} 
                               loop={true} 
@@ -317,22 +318,22 @@ const ProductView = props => {
                 <SectionBody>
                     <Swiper
                       // centeredSlides={true}
-                      pagination={{
-                        type: "fraction",
-                      }}
+                      // pagination={{
+                      //   type: "fraction",
+                      // }}
                           //navigation={true}
                       modules={[Pagination, Navigation]}
                       className="mySwiper"
                       autoplay={{
-                        "delay": 3500,
+                        "delay": 1500,
                         "disableOnInteraction": true
                       }} 
                       loop={true} 
-                       spaceBetween={40}
+                       spaceBetween={10}
                       // grid={4}
                       breakpoints = {{
                               1024: {
-                                  slidesPerView: 3,
+                                  slidesPerView: 4,
                                   spaceBetweenSlides: 40
                               },
                               768: {

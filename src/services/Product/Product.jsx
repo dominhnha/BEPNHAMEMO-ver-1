@@ -166,90 +166,31 @@ export const sortProduct = async(name = "", proviso = "") =>{
 
 
 
-export const searchProduct = async(queryText,fieldName,proviso)=>{
-    const colRef = collection(db,CollectionName);
-    if(queryText === null){
-        console.log("f")
-        return await getDocs(query(colRef, orderBy(`${fieldName}`,`${proviso}`)))
-            .then(async(docs)=>{
-                let ListProduct = [];
-                docs.forEach(item=>{
-                    ListProduct.push({
-                        Pid:item.id,
-                        Info:item.data()
-                    })
-                })
-                return {
-                    success: true,
-                    payload:ListProduct
-                }
-            })
-            .catch(err => {
-                return {
-                    success: false,
-                    payload:err
-                }
-            });
+//Search for Product
+export const searchProduct = async(querrText)=>{
+    const colRef = collection(db, CollectionName);
+    const docsSnap = await getDocs(colRef);
+    let curProduct = []
+    docsSnap.forEach(doc => {
+        curProduct.push({
+            Pid:doc.id,
+            Info:doc.data()
+        })
+    })
+    const indexProduct = curProduct.filter((e,index)=>{  
+        return e.Info.NameProduct.toLowerCase().includes(querrText.toLowerCase())
+    })
+    if(indexProduct.length > 0){
+        return{
+            success: true,
+            payload:indexProduct,
+        }
+    } else{
+        return{
+            success: false,
+            payload:[],
+        }
     }
-    
-    else if(fieldName === null && proviso === null && queryText!=null) {
-        queryText.toLowerCase();
-        return await getDocs(query(colRef,
-           
-            where('NameProduct', '>=', queryText)
-            ,where('NameProduct', '<=', queryText +  '\uf8ff')
-           
-            
-        ))
-            .then(async(docs)=>{
-                let ListProduct = [];
-                docs.forEach(item=>{
-                    ListProduct.push({
-                        Pid:item.id,
-                        Info:item.data()
-                    })
-                })
-                return {
-                    success: true,
-                    payload:ListProduct
-                }
-            })
-            .catch(err => {
-                return {
-                    success: false,
-                    payload:err
-                }
-            });
-    }
-    else{
-        console.log("search",queryText,fieldName,proviso)
-        return await getDocs(query(
-            colRef
-            ,orderBy(`${fieldName}`, `${proviso}`)
-            ,where(`${fieldName}`,'>=', `${queryText}`)
-            ,where(`${fieldName}`,'<=', `${queryText + '\uf8ff'}` ))
-        ) 
-            .then(async(docs)=>{
-                let ListProduct = [];
-                docs.forEach(item=>{
-                    ListProduct.push({
-                        Pid:item.id,
-                        Info:item.data()
-                    })
-                })
-                return {
-                    success: true,
-                    payload:ListProduct
-                }
-            })
-            .catch(err => {
-                return {
-                    success: false,
-                    payload:err
-                }
-            });
-    }
-   
 }
 
 //Add best sell products
