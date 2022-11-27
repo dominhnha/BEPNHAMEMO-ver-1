@@ -6,7 +6,7 @@ import {AuthContext} from '../../contexts/AuthContextProvider';
 import {  AddUserAuthencation,SiginUserAuthencation} from '../../services/Authencation/Authencation';
 import { async } from '@firebase/util';
 import {  AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
-import { AddProduct, GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
+import { GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
 import pattern from '../../assets/Img/pattern.png'
 import object1 from '../../assets/Img/object1.png'
 import Slider from '../../components/Slider/Slider';

@@ -14,6 +14,7 @@ const Payment = React.lazy(() => import('../pages/Payment/Payment'))
 const Error = React.lazy(() => import('../pages/Error/Error'))
 const Search = React.lazy(() => import('../pages/Search/Search'))
 const Contact = React.lazy(() => import('../pages/Contact/Contact'))
+const Event = React.lazy(() => import('../pages/Event/Event'))
 
 
 
@@ -38,7 +39,8 @@ const MainRoutes = props => {
           
         </Route>
         <Route exact path='/Contact' element={<Contact/>}></Route>
-        {/*  */}
+        {/* Event */}
+        <Route exact path='/Event' element={<Event/>}></Route>
         <Route  path='*' element={<Error/>}></Route>
     </Routes>
   )

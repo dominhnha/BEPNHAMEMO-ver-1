@@ -223,7 +223,7 @@ const Search = props => {
           <div className={`Search__bottom ${posts.length == 0 ? "" :"active"}`}>
             <Section>
               <SectionTitle>
-                Sản Phẩm Đề Suất 
+                Sản Phẩm Đề Xuất 
               </SectionTitle>
               <SectionBody>
                 <Grid
