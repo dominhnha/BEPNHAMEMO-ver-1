@@ -178,7 +178,10 @@ export const searchProduct = async(querrText)=>{
         })
     })
     const indexProduct = curProduct.filter((e,index)=>{  
-        return e.Info.NameProduct.toLowerCase().includes(querrText.toLowerCase())
+        
+        const tmp = e.Info.NameProduct.toLowerCase().includes(querrText.toLowerCase()) 
+        console.log(tmp, e.Info.NameProduct.toLowerCase(),querrText.toLowerCase())
+        return tmp;
     })
     if(indexProduct.length > 0){
         return{

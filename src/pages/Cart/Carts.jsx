@@ -172,7 +172,7 @@ const Carts = props => {
                           <div className="Cart__warpper">
                             <p> ID:{item.Pid}</p>
                             <h2>Tên:{item.NameProduct}</h2>
-                            <p>Giá: <span>{total}₫</span></p>
+                            <p>Giá: <span>{formatNumber(total)}₫</span></p>
                           </div>
                         </div>
                         
@@ -220,7 +220,7 @@ const Carts = props => {
                 {
                   Payment.success == true 
                   ? <span>{
-                      total
+                     formatNumber(total)
                     }₫</span>
                   : <span>0₫</span>
                 }

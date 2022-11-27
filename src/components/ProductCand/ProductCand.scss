@@ -2,7 +2,7 @@
     overflow: hidden;
     border-radius: 8px;
     cursor: pointer;
-    max-width: 350px;
+    max-width: 450px;
     display: block;
     &:hover{
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -58,7 +58,7 @@
     
     &__bottom{
        
-        background-color: #ff8b04;
+        //background-color: #ff8b04;
         &__warpper{
             display: flex;
             align-items: center;
