@@ -112,113 +112,74 @@ export const setNewCart = async(uid,listProduct)=>{
 }
 
 //PurchaseHistory
-export const AddPurchaseHistoryForUser = async(uid,Cart = [{pid:"",quantity:""}],status={user:true,discount:true},Total ) =>{ 
-
-    const initPur = {
-        Item:[],
-        Discount:"",
-        Total:Total,
-        DayPurchased:serverTimestamp(),
-        Address:"",
-        Payments:"",
-        FullName:"",
-    }
-    
-    if(status.discount===false){
-        return {
-            success: false,
-            payload:null,
+//PurchaseHistory
+export const AddPurchaseHistoryForUser = async(uid,status,Cart,ListProduct=[{pid:"",quantity:""}]) =>{ 
+    const {emailOrPhone,Address,Payments,Total,PriceDiscount,
+        FullName
+    } = Cart;
+        const initPur = {
+            Item:ListProduct,
+            Discount:PriceDiscount,
+            Total:Total,
+            DayPurchased:serverTimestamp(),
+            Address:Address,
+            Payments:Payments,
+            FullName:FullName,
+            Email:emailOrPhone
         }
-    }
-    else if(status.discount===true || status.discount===null){
-        
-        if(status.user===false){
-            const colRef = collection(db,"PurchaseHistory");
-            const PurDoc = await addDoc(colRef,initPur);
-            const docPur = await doc(db,"PurchaseHistory",PurDoc.id);
-            for(let i=0;i<Cart.length;i++){
-                const docRefP = doc(db,"Product",Cart[i].pid);
-                const QuantityProduct = await GetQuantityProduct(Cart[i].pid);
-                if(QuantityProduct>=Cart[i].quantity){
-                    await updateDoc(docRefP,{
-                            Quantity:(QuantityProduct-Cart[i].quantity).toString()
-                                             })
-                    await AddBestSell(Cart[i].pid,Cart[i].quantity);
-                    await updateDoc(docPur,{
-                        Item:arrayUnion({
-                            Pid:Cart[i].pid,
-                            NameProduct:"",
-                            PriceProduct:"",
-                            Quantity:Cart[i].quantity,
-                        })
-                    })
-                }
-                else{
-                    await deleteDoc(docPur);
-                    return{
-                        success:false,
-                        payloads:null
-                }
-                }               
-            }
-        }
-        else{
+        if(status===true){
+            // await addDoc(db, CollectionName, uid,"PurchaseHistoryForUser");
             const docRef = doc(db, CollectionName, uid);
             const colRef = collection(docRef, "PurchaseHistoryForUser");
             const PurDoc = await addDoc(colRef,initPur);
-            const docUserPurRef = doc(db, CollectionName, uid,"PurchaseHistoryForUser",PurDoc.id)
-            for(let i=0;i<Cart.length;i++){
-                const docRefP = doc(db,"Product",Cart[i].pid);
-                const QuantityProduct = await GetQuantityProduct(Cart[i].pid);
-                if(QuantityProduct>=Cart[i].quantity){
-                    await updateDoc(docRefP,{
-                            Quantity:(QuantityProduct-Cart[i].quantity).toString()
-                                             })
-                    await AddBestSell(Cart[i].pid,Cart[i].quantity);
-                     await updateDoc(docUserPurRef,{
-                            Item:arrayUnion({
-                                Pid:Cart[i].pid,
-                                NameProduct:"",
-                                PriceProduct:"",
-                                Quantity:Cart[i].quantity,
-                            })
-                        })     
-            }
-                else{
-                    await deleteDoc(docUserPurRef);
-                    return{
-                        success:false,
-                        payloads:null
-                }
+            for(let i=0;i<ListProduct.length;i++){
+                
+                const docRefP = doc(db,"Product",ListProduct[i].pid);
+                const QuantityProduct = await GetQuantityProduct(ListProduct[i].pid);
+                await updateDoc(docRefP,{
+                    Quantity:(QuantityProduct-ListProduct[i].quantity).toString()})
+                await AddBestSell(ListProduct[i].pid,ListProduct[i].quantity);
+                await AddPurchaseHistory(uid,PurDoc.id);
             }
         }
-            await AddPurchaseHistory(uid,PurDoc.id);
-            
+        else{
+            const colRef = collection(db,"PurchaseHistory");
+            const PurDoc = await addDoc(colRef,initPur);
+            const docPur = await doc(db,"PurchaseHistory",PurDoc.id);
+            for(let i=0;i<ListProduct.length;i++){
+                const docRefP = doc(db,"Product",ListProduct[i].pid);
+                const QuantityProduct = await GetQuantityProduct(ListProduct[i].pid);
+                await updateDoc(docRefP,{
+                    Quantity:(QuantityProduct-ListProduct[i].quantity).toString()
+                                     })
+                await AddBestSell(ListProduct[i].pid,ListProduct[i].quantity);
+                
+            }
+            await updateDoc(docPur,{
+                    Uid:uid,
+        })
         }
-        
+       
     }
-
- 
-}
 export const GetPurchaseHistoryByUser=async(uid,uPid)=>{
-    const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
     const docSnap = await getDoc(docRef);
-    if(docSnap.exists())
-        return await docSnap.data();
-    return{
-        success: false,
-        payload:"No Purchase History"
-    }
-}
-
-//Get quantity product
-export const GetQuantity=async(uid,uPid)=>{
     const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
-    const docSnap = await getDoc(docRef);
+    return await docSnap.data();
     if(docSnap.exists())
-        return await docSnap.data().Item;
     return{
-        success: false,
-        payload:"No Purchase History"
+            success: false,
+            payload:"No Purchase History"
+        }
     }
-}
+    
+    //Get quantity product
+    export const GetQuantity=async(uid,uPid)=>{
+        const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
+        const docSnap = await getDoc(docRef);
+        if(docSnap.exists())
+            return await docSnap.data().Item;
+        return{
+            success: false,
+            payload:"No Purchase History"
+        }
+    }

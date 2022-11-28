@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import Logo from '../../assets/Img/NEPNHAMEMO__LOGO.png'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Icon from '../Icon/Icon'
 import  './Header.scss'
 
@@ -15,6 +15,7 @@ import { object } from 'yup/lib/locale'
 const Header = props => {
 
   const {pathname} = useLocation();
+  const history = useNavigate();
   
   
   const navBar = [
@@ -103,6 +104,8 @@ const Header = props => {
     handleQuantity();
   },[Cart])
   console.log('load auth',Authur);
+
+
   
   
   // console.log('database',auth.currentUser.uid); 

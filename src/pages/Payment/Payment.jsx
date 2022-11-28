@@ -19,6 +19,7 @@ import  { AuthContext } from '../../contexts/AuthContextProvider';
 import { AddPurchaseHistoryForUser } from '../../services/Authencation/User';
 import { CartContext } from '../../contexts/CartContextProvider';
 import { CART__REMOVE } from '../../reducers/type';
+import { CheckDiscount } from '../../services/Authencation/Discount';
  
 const options = [
   { value: 'advance', label: 'Thanh toán trước khi nhận hàng' },
@@ -62,24 +63,45 @@ const Payment = props => {
     onSubmit: useCallback(
       async(values) => {
         try{
-          // code is here
-          if(Authur.success == true && Payment.success == true){
+          console.log(values.emailOrPhoneNumber,values.address, values.delivery)
+            let total = 0;
+            let discount =await CheckDiscount(values.voucher.trim())
             const initCart = Payment.payload.map(item=>{
-
+            const tmp = Number(item.Price) * Number(item.Quantity) 
+              total+=tmp
               const initItem =  {
-                Pid:item.Pid,
-                Quantity:item.Quantity
+                pid:item.Pid,
+                quantity:Number(item.Quantity)
               }
               return initItem  
-            }) 
-            console.log("s",initCart)
-            await AddPurchaseHistoryForUser(Authur.payload.uid,initCart,{
-              user:true,discount:true
-            })
+          }) 
+          console.log(discount)
+          total=total*(1-discount);
+          // user login
+          if(Authur.success == true && Payment.success == true){
+            
+            console.log("s",Authur.payload.uid,{
+              emailOrPhone:values.emailOrPhoneNumber  ,
+              Address:values.address,
+              Total:total,
+              PriceDiscount:discount,
+              FullName:Authur.payload.user.FullName,
+              Payments:values.delivery
 
-          
+            },initCart)
+            await AddPurchaseHistoryForUser(Authur.payload.uid,true,{
+              emailOrPhone:values.emailOrPhoneNumber  ,
+              Address:values.address,
+              Total:total,
+              PriceDiscount:discount,
+              FullName:Authur.payload.user.FullName,
+              Payments:values.delivery
+
+            },initCart)
+            
           }else{
             // authr false code here 
+
           }
           // remove item in cart 
           Payment.payload.map(item=>{
@@ -91,9 +113,10 @@ const Payment = props => {
 
 
           // code here
-          console.log(values.emailOrPhoneNumber,values.address, values.delivery)
+         
           console.log(Payment.payload)
         }catch(e){
+          console.log(e)
           toast.error('Đã xảy ra lỗi vui lòng thử lại', {
             position: "top-right",
             autoClose: 5000,
@@ -104,6 +127,7 @@ const Payment = props => {
             progress: undefined,
             theme: "light",
             });
+            
         }
        // AddPurchaseHistoryForUser
       },[Payment]

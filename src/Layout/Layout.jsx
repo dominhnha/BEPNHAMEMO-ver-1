@@ -1,12 +1,15 @@
 import React, { Suspense } from 'react'
 import PropTypes from 'prop-types'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, useNavigate } from 'react-router-dom'
 
 import MainRoutes from '../routes/MainRoutes'
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import { CartContext } from '../contexts/CartContextProvider';
 import { CART__SET } from '../reducers/type';
+import { AuthContext } from '../contexts/AuthContextProvider';
+import Admin from '../pages/Private/Admin';
+
 
 const Header = React.lazy(() => import('../components/Header/Header'));
 const Footer = React.lazy(() => import('../components/Footer/Footer'));
@@ -15,6 +18,7 @@ const Loading = React.lazy(() => import('../components/Loading/Loading'));
 
 const Layout = props => {
   const {Cart,Cartdispatch} = useContext(CartContext);
+  const {Authur} = useContext(AuthContext);
   // get default cart by local store
   useEffect(()=>{
     const data = JSON.parse( localStorage.getItem("CART"));
@@ -32,14 +36,30 @@ const Layout = props => {
     
   },[])
   console.log(Cart)
+
+  if(Authur.success == true && Authur.payload.user.Role == "Admin"){
+ 
+  }
+  
   return (
     <BrowserRouter>
         <Suspense fallback={<Loading/>}>
-         <Header/>
+          {
+            Authur.success == true && Authur.payload.user.Role == "Admin"
+            ? null
+            : <Header/>
+          }
             <main>
-                <MainRoutes/>
+                <div className="App">
+                  <MainRoutes/>
+                </div>
             </main>
-        <Footer/>
+          {
+            Authur.success == true && Authur.payload.user.Role == "Admin"
+            ? null
+            :<Footer/>
+          }
+        
         </Suspense>     
     
     </BrowserRouter>

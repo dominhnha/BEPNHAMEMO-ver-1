@@ -164,8 +164,6 @@ export const sortProduct = async(name = "", proviso = "") =>{
             
 }
 
-
-
 //Search for Product
 export const searchProduct = async(querrText)=>{
     const colRef = collection(db, CollectionName);
@@ -202,7 +200,7 @@ export const AddBestSell=async(pid,quantity)=>{
     const docSnap = await getDoc(docRef);
     let infoProduct = await GetProductById(pid);
     if(docSnap.exists()){
-await updateDoc(docRef,{
+    await updateDoc(docRef,{
         Pid:pid,
         Info:infoProduct.Info,
         QuantitySold: increment(quantity)

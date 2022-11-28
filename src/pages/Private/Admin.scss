@@ -1,0 +1,10 @@
+@import "../../sass/variables";
+@import "../../sass/mixin";
+@import "../../sass/base";
+
+.SideBar{
+    width: 300px;
+    min-height: 100vh;
+
+    background-color: antiquewhite;
+}

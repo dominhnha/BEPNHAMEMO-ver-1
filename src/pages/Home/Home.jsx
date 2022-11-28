@@ -23,10 +23,8 @@ const Home = props => {
   const {Authur,dispatch} = useContext(AuthContext);
   const [newProduct,setNewProduct] = useState([]);
   const [bestSale,setBestSale] = useState([]);
+  
 
-
- 
-    
     useEffect(()=>{
       try{
         const getData = async()=>{

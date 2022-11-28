@@ -1,6 +1,9 @@
 import React,{lazy} from 'react'
 import PropTypes from 'prop-types'
 import {Route, Routes} from 'react-router-dom'
+import { useContext } from 'react'
+import { AuthContext } from '../contexts/AuthContextProvider'
+
 // import Components
 
 
@@ -14,11 +17,21 @@ const Payment = React.lazy(() => import('../pages/Payment/Payment'))
 const Error = React.lazy(() => import('../pages/Error/Error'))
 const Search = React.lazy(() => import('../pages/Search/Search'))
 const Contact = React.lazy(() => import('../pages/Contact/Contact'))
+const  Admin = React.lazy(() => import('../pages/Private/Admin'))
 
 
 
 
 const MainRoutes = props => {
+  const {Authur} = useContext(AuthContext);
+ 
+  if(  Authur.success == true && Authur.payload.user.Role == "Admin"){
+   return(   
+   <Routes>
+      <Route exact path='/' element={<Admin/>} />
+   </Routes>)
+  }
+
   return (
     <Routes>
         <Route exact path='/' element={<Home/>} />
@@ -39,6 +52,8 @@ const MainRoutes = props => {
         </Route>
         <Route exact path='/Contact' element={<Contact/>}></Route>
         {/*  */}
+        {/* admin page */}
+        
         <Route  path='*' element={<Error/>}></Route>
     </Routes>
   )
