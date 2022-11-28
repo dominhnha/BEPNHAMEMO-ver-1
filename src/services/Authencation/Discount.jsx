@@ -5,15 +5,23 @@ const CollectionName = "Discount";
 
 //Add new Discount
 
-export const AddDiscount = async() =>{
+export const AddDiscount = async(newDiscount) =>{
+    const {
+        NameDiscount,
+        DescriptionDiscount,
+        PercentDiscount,
+        Exp,
+        Mfg,
+        Quantity,
+    } = newDiscount;
     const CollectionRef = collection(db, CollectionName);
     const initDiscount = {
-        NameDiscount:"",
-        DescriptionDiscount:"",
-        PercentDiscount:"",
-        Exp: await Timestamp.fromDate(new Date("December 10,2022")),
-        Mfg: await Timestamp.fromDate(new Date("December 10,2022")),
-        Quantity:"",
+        NameDiscount:NameDiscount,
+        DescriptionDiscount:DescriptionDiscount,
+        PercentDiscount:PercentDiscount,
+        Exp: await Timestamp.fromDate(new Date(Exp)),
+        Mfg: await Timestamp.fromDate(new Date(Mfg)),
+        Quantity:Quantity,
     }
     return await addDoc(CollectionRef, initDiscount)
     .then(e=>{
@@ -35,30 +43,14 @@ EXP: expiry date
 MFG: manufacturing date
  */
 //Discount 10% product
-export const Discount10 = async(pid)=>{
+export const DiscountForProduct = async(newDiscount)=>{
+    const {NameDiscount,PercentDiscount,conditionsApply} = newDiscount;
     const initDiscount10={
-        NameDiscount:"Discount 10% Product",
-        PercentDiscount:"10%",
+        NameDiscount:NameDiscount,
+        PercentDiscount:PercentDiscount,
+        ConditionsApply:conditionsApply
     }
-    return await setDoc(doc(db,"Discount 10% Product",pid),initDiscount10)
-}
-
-
-//Discount 20% product
-export const Discount20 = async(pid)=>{
-    const initDiscount20={
-        NameDiscount:"Discount 20% Product",
-        PercentDiscount:"10%",
-    }
-    return await setDoc(doc(db,"Discount 20% Product",pid),initDiscount20)
-}
-//Discount 30% product
-export const Discount30 = async(pid)=>{
-    const initDiscount30={
-        NameDiscount:"Discount 30% Product",
-        PercentDiscount:"30%",
-    }
-    return await setDoc(doc(db,"Discount 30% Product",pid),initDiscount30)
+    return await addDoc(collection(db, CollectionName), initDiscount10)
 }
 
 //Get PercentDiscount by id
