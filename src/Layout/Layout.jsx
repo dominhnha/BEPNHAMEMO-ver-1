@@ -50,7 +50,7 @@ const Layout = props => {
             : <Header/>
           }
             <main>
-                <div className="App">
+                <div className={`App ${Authur.success == true && Authur.payload.user.Role == "Admin" ?"active":""}`}>
                   <MainRoutes/>
                 </div>
             </main>

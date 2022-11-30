@@ -12,7 +12,7 @@ const SideBar = props => {
     const listNavigation = [
         {
             icon:"bx bx-bar-chart-alt-2",
-            path:"Chart",
+            path:"/",
             title:"Chart" 
         },
         {

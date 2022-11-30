@@ -8,7 +8,7 @@ import CustomSelect from '../../components/FieldCustom/CustomSelect';
 import { PaymentContext } from '../../contexts/PaymentContextProvider';
 import { v4 } from 'uuid';
 import Sea from '../../components/Animation/Sea/Sea'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {formatNumber } from '../../utils/Format'
 import Button from '../../components/Button/Button/Button';
 import { useState } from 'react';
@@ -30,6 +30,7 @@ const Payment = props => {
   const {Cart,Cartdispatch} = useContext(CartContext);
   const {Authur,dispatch} = useContext(AuthContext);
   const [Total,setTotal] = useState(0);
+  const history = useNavigate();
   useEffect(()=>{
     if(Payment.success == true && Payment.payload.length > 0){
       let tmp = 0;
@@ -65,7 +66,6 @@ const Payment = props => {
         try{
           console.log(values.emailOrPhoneNumber,values.address, values.delivery)
             let total = 0;
-            let discount =await CheckDiscount(values.voucher.trim())
             const initCart = Payment.payload.map(item=>{
             const tmp = Number(item.Price) * Number(item.Quantity) 
               total+=tmp
@@ -74,8 +74,11 @@ const Payment = props => {
                 quantity:Number(item.Quantity)
               }
               return initItem  
-          }) 
-          console.log(discount)
+          })
+          let discount = 0;
+          if(values.voucher.trim() != ""){
+             discount =await CheckDiscount(values.voucher.trim())
+          } 
           total=total*(1-discount);
           // user login
           if(Authur.success == true && Payment.success == true){
@@ -101,6 +104,16 @@ const Payment = props => {
             
           }else{
             // authr false code here 
+            const user = v4()
+            await AddPurchaseHistoryForUser(user,false,{
+              emailOrPhone:values.emailOrPhoneNumber  ,
+              Address:values.address,
+              Total:total,
+              PriceDiscount:discount,
+              FullName:user,
+              Payments:values.delivery
+
+            },initCart)
 
           }
           // remove item in cart 
@@ -110,8 +123,17 @@ const Payment = props => {
               payload:item.Pid,
             })
           })
-
-
+          toast.success('🦄 Mua hàng thành công!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+          history("/");
           // code here
          
           console.log(Payment.payload)
@@ -127,6 +149,7 @@ const Payment = props => {
             progress: undefined,
             theme: "light",
             });
+           
             
         }
        // AddPurchaseHistoryForUser

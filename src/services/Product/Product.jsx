@@ -202,13 +202,13 @@ export const AddBestSell=async(pid,quantity)=>{
     if(docSnap.exists()){
     await updateDoc(docRef,{
         Pid:pid,
-        Info:infoProduct.Info,
+        Info:infoProduct.payload.Info,
         QuantitySold: increment(quantity)
         })
     }else{
     const initBestSell = {
         Pid:pid,
-        Info:infoProduct.Info,
+        Info:infoProduct.payload.Info,
         QuantitySold:quantity,
     } 
     await setDoc(docRef,initBestSell);

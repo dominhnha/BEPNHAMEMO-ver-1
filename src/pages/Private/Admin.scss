@@ -2,9 +2,10 @@
 @import "../../sass/mixin";
 @import "../../sass/base";
 
-.SideBar{
-    width: 300px;
-    min-height: 100vh;
 
-    background-color: antiquewhite;
+.Admin{
+    display: flex;
+    &__view{
+        width: 100%;
+    }
 }
