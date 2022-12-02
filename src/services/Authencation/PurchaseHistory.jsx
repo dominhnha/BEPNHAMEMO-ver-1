@@ -1,18 +1,17 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc} from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc} from "firebase/firestore";
 
 
 const CollectionName = "PurchaseHistory"
 
-export const AddPurchaseHistory = async(uid,uPid)=>{
-    const docRef = doc(db, "User",uid,"PurchaseHistoryForUser",uPid);
-    const docSnap = await getDoc(docRef);
+export const AddPurchaseHistory = async(uid,uPid,PurchaseHistory)=>{
     const colRef = collection(db, CollectionName);
-    const initPur = {
+    const PurDoc = await addDoc(colRef,PurchaseHistory);
+    const docPur = await doc(db,"PurchaseHistory",PurDoc.id);
+    
+    await updateDoc(docPur,{
         Uid:uid,
-        PurchaseHistory:docSnap.data(),
-    }
-    await addDoc(colRef,initPur)
+    })
     
     
 }
