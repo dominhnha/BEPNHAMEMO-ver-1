@@ -112,8 +112,8 @@ export const setNewCart = async(uid,listProduct)=>{
 }
 //PurchaseHistory
 export const AddPurchaseHistoryForUser = async(uid,status,Cart,ListProduct=[{pid:"",quantity:""}]) =>{ 
-const {Email,Phone,Address,Payments,Total,PriceDiscount,
-    firstname,lastname
+const {Email,Address,Payments,Total,PriceDiscount,
+    FullName
 } = Cart;
     const initPur = {
         Item:ListProduct,
@@ -122,24 +122,23 @@ const {Email,Phone,Address,Payments,Total,PriceDiscount,
         DayPurchased:serverTimestamp(),
         Address:Address,
         Payments:Payments,
-        FullName:`${firstname} ${lastname}`,
-        Email:Email,
-        Phone:Phone
+        FullName:FullName,
+        EmailOfPhone:Email,
     }
     if(status===true){
-        // await addDoc(db, CollectionName, uid,"PurchaseHistoryForUser");
+        
         const docRef = doc(db, CollectionName, uid);
         const colRef = collection(docRef, "PurchaseHistoryForUser");
         const PurDoc = await addDoc(colRef,initPur);
         for(let i=0;i<ListProduct.length;i++){
-            
             const docRefP = doc(db,"Product",ListProduct[i].pid);
             const QuantityProduct = await GetQuantityProduct(ListProduct[i].pid);
             await updateDoc(docRefP,{
                 Quantity:(QuantityProduct-ListProduct[i].quantity).toString()})
             await AddBestSell(ListProduct[i].pid,ListProduct[i].quantity);
-            await AddPurchaseHistory(uid,PurDoc.id);
+            
         }
+        await AddPurchaseHistory(uid,PurDoc.id,initPur);
     }
     else{
         const colRef = collection(db,"PurchaseHistory");
