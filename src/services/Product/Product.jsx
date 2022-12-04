@@ -1,36 +1,51 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc, getDocs, increment, limit, orderBy, query, setDoc, Timestamp,updateDoc,where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, limit, orderBy, query, serverTimestamp, setDoc, Timestamp,updateDoc,where } from "firebase/firestore";
+import { GetRevenuePerMonth } from '../Authencation/Report';
+import { GetConditionsApply, GetPercentDiscountByID } from '../Authencation/Discount';
 
 const CollectionName = "Product"
 
-export const AddProduct = async() => {
-    const NewProduct = {
-        NameProduct: "",
-        DescriptionProduct: "",
-        Ingerdient: "",
-        PriceProduct: "",
-        QuantityProduct: "",
-        ImageIdProduct: "",
-        exp: await Timestamp.fromDate(new Date("December 10,1900")),
-        mfg: await Timestamp.fromDate(new Date("December 10,1900")),
-        Classify: "",
-    }
-    const CollectionRef = collection(db, CollectionName);
-    return await addDoc(CollectionRef,NewProduct)
-    .then(e=>{
-        return {
-            success: true,
-            payload:NewProduct,
-        }
-    })
-    .catch((error) => {
-        return {
-            success: false,
-            payload:error,
-        }
-    })
-};
+export const AddProduct = async (newProduct) => {
+    const {
+        NameProduct,
+        DescriptionProduct,
+        Ingerdient,
+        Price,
+        Quantity,
+        ImageIdProduct,
+        exp,
+        mfg,
+        Classify,
+    } = newProduct;
+    const initNewProduct = {
+        NameProduct: NameProduct,
+        DescriptionProduct: DescriptionProduct,
+        Ingerdient: Ingerdient,
+        Price: Price,
+        Quantity: Quantity,
+        ImageIdProduct: ImageIdProduct,
+        exp: Timestamp.fromDate(new Date(exp)),
+        mfg: Timestamp.fromDate(new Date(mfg)),
+        Classify: Classify,
+        DayProduce: serverTimestamp(),
 
+    }
+    const colRef = collection(db, CollectionName)
+    return await addDoc(colRef, initNewProduct)
+        .then(e => {
+            return {
+                success: true,
+                payload: initNewProduct,
+            }
+        })
+        .catch((error) => {
+            return {
+                success: false,
+                payload: error,
+            }
+        })
+
+};
 
 // Timestamp cover date by toDate()
 export const GetProductById = async(pid)=>{
@@ -223,7 +238,8 @@ export const GetBestsellProduct = async(number)=>{
         let ListProduct =[];
         docs.forEach(item=>{
             ListProduct.push({
-                Info:item.data().Info
+                Info:item.data().Info,
+                Pid:item.id,
             })
         })
         return{
@@ -286,5 +302,85 @@ export const GetQuantityProduct = async(pid)=>{
             success: false,
             payload:"No product"
         }
+    }
+}
+
+//Update product
+export const updateProduct = async (pid, updateInfo) => {
+    const {
+        NameProduct,
+        DescriptionProduct,
+        Ingerdient,
+        Price,
+        Quantity,
+        ImageIdProduct,
+        exp,
+        mfg,
+        Classify,
+    } = updateInfo;
+    const docRef = doc(db, CollectionName, pid);
+    return await updateDoc(docRef, {
+        NameProduct: NameProduct,
+        DescriptionProduct: DescriptionProduct,
+        Ingerdient: Ingerdient,
+        Price: Price,
+        Quantity: Quantity,
+        ImageIdProduct: ImageIdProduct,
+        exp: new Timestamp.fromDate(new Date(exp)),
+        mfg: new Timestamp.fromDate(new Date(mfg)),
+        Classify: Classify,
+    })
+        .then(docRef => {
+            return {
+                success: true,
+                payload: "Product information was updated successfully."
+            }
+        })
+        .catch(e => {
+            return {
+                success: false,
+                payload: e
+            }
+        })
+}
+
+//Delete Product
+export const deleteProduct = async (pid) => {
+    try {
+        await deleteDoc(doc(db, CollectionName, pid))
+        return {
+            success: true,
+            payload: "Product removed"
+        }
+    }
+    catch (e) {
+        return {
+            success: false,
+            payload: e,
+        }
+    }
+}
+
+//Check conditionsApply Discount for product
+
+export const CheckConditionApplyDiscount = async (dpid) =>{
+    const Now = new Date(Date.now());
+    const Month = Now.getMonth()+1;
+    const Year = Now.getFullYear();
+    const ListRev = await (await GetRevenuePerMonth( Month, Year)).payload.Item;
+    const ConditionsApply = await(await GetConditionsApply(dpid)).payload.Info
+    const PercentDiscount = await GetPercentDiscountByID(dpid)
+    const ListProduct = [];
+    for(let i=0;i<ListRev.length;i++){
+        if(ListRev[i].QuantitySold>=ConditionsApply){
+            ListProduct.push(ListRev[i])
+        }
+    }
+    for(let i=0;i<ListProduct.length;i++){
+        const Price = await GetPriceProduct(ListProduct[i].Pid);
+        await updateDoc(doc(db,CollectionName,ListProduct[i].Pid),{
+            Discount:PercentDiscount,
+            PriceDiscount: Price*(1-PercentDiscount)
+        })
     }
 }

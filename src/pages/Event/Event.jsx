@@ -14,7 +14,9 @@ import {classifyProduct} from '../../services/Product/Product';
 
 const Event = props => {
   const [Classify ,setClassify] = useState([]);
-    
+  useEffect(()=>{
+      window.scrollTo(0, 0)
+  },[])
     useEffect(()=>{
         try{
             const getData = async()=>{

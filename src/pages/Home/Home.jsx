@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import {AUTH__SET} from '../../reducers/type'
-import {AuthContext} from '../../contexts/AuthContextProvider';
-import {  AddUserAuthencation,SiginUserAuthencation} from '../../services/Authencation/Authencation';
+import { AUTH__SET } from '../../reducers/type'
+import { AuthContext } from '../../contexts/AuthContextProvider';
+import { AddUserAuthencation, SiginUserAuthencation } from '../../services/Authencation/Authencation';
 import { async } from '@firebase/util';
-import {  AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
-import { AddProduct, GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct} from '../../services/Product/Product';
+import { AddUserCollection, GetToCart, GetUserCollection, setNewCart } from '../../services/Authencation/User';
+import { AddProduct, GetBestsellProduct, getNewProduct, GetProductById, searchProduct, sortProduct } from '../../services/Product/Product';
 import pattern from '../../assets/Img/pattern.png'
 import object1 from '../../assets/Img/object1.png'
 import Slider from '../../components/Slider/Slider';
@@ -19,120 +19,74 @@ import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/
 import Section from '../../components/Section/Section'
 import "./Home.scss"
 const Home = props => {
-  
-  const {Authur,dispatch} = useContext(AuthContext);
-  const [newProduct,setNewProduct] = useState([]);
-  const [bestSale,setBestSale] = useState([]);
-  
 
-    useEffect(()=>{
-      try{
-        const getData = async()=>{
-          const data = await getNewProduct(8);
-          if(data.success) setNewProduct(data.payload);
-         
-        }
-        getData()
+  const { Authur, dispatch } = useContext(AuthContext);
+  const [newProduct, setNewProduct] = useState([]);
+  const [bestSale, setBestSale] = useState([]);
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
-      } catch(e){
-        console.log(e);
+  useEffect(() => {
+    try {
+      const getData = async () => {
+        const data = await getNewProduct(8);
+        if (data.success) setNewProduct(data.payload);
+
       }
-      
-    },[])
+      getData()
 
-    useEffect(()=>{
-      try{
-        const getData = async()=>{
-          const data = await GetBestsellProduct(8);
-       
-          if(data.success) setBestSale(data.payload);
-        }
-        getData()
-      }catch(e){
-        console.log(e)
+    } catch (e) {
+      console.log(e);
+    }
+
+  }, [])
+
+  useEffect(() => {
+    try {
+      const getData = async () => {
+        const data = await GetBestsellProduct(8);
+
+        if (data.success) setBestSale(data.payload);
       }
-      
-    },[])
-   console.log(newProduct)
-    return (
-      <div className='Home'>
-        {/*---------------- slider----------------- */}
-        <Slider> 
-        </Slider>
-        {/*---------------- end Slider------------- */}
+      getData()
+    } catch (e) {
+      console.log(e)
+    }
 
-        {/* ----------------newproduct---------------- */}
-        <div className="container">
-          <Section>
-            <div className="Home__section">
-                <div className="Home__section__top">
-                    <div className="Home__section__wrapper">
-                        <h2>Sản phẩm mới</h2>
-                        <Link to={"/Product"}>
-                          <Button>Xem Thêm</Button>
-                        </Link>  
-                    </div>
-                    
-                </div>
-                <div className="Home__section__bottom">
-                  <Grid
-                    col={4}
-                    mdCol={2}
-                    smCol={1}
-                    gap={20}
-                  > 
-                    {
-                      newProduct.length > 0
-                      ? newProduct.map(item=>{
-                        return(
-                          <ProductCand
-                            key={v4()}
-                            Pid={item.Pid}
-                            Name={item.Info.NameProduct}
-                            Description={item.Info.DescriptionProduct}
-                            Image={item.Info.Image}
-                            Price={item.Info.Price}
-                            sale={30}
-                          />
-                        )
-                      })
-                      : Array(8)
-                      .fill(0)
-                      .map(item=>{
-                        return(
-                          <ComponentLoading key={v4()}/>
-                        )
-                      })
-                    }
-                  </Grid>
-                </div>
-            </div>
-          </Section>
-          
-        
-{/* -------------------------------best sale--------------------------------- */}
-          <Section>
+  }, [])
+  console.log(newProduct)
+  return (
+    <div className='Home'>
+      {/*---------------- slider----------------- */}
+      <Slider>
+      </Slider>
+      {/*---------------- end Slider------------- */}
+
+      {/* ----------------newproduct---------------- */}
+      <div className="container">
+        <Section>
           <div className="Home__section">
-              <div className="Home__section__top">
-                  <div className="Home__section__wrapper">
-                      <h2>Sản bán chạy</h2>
-                      <Link to={"/Product"}>
-                        <Button>Xem Thêm</Button>
-                      </Link>  
-                  </div>
-                  
+            <div className="Home__section__top">
+              <div className="Home__section__wrapper">
+                <h2>Sản phẩm mới</h2>
+                <Link to={"/Product"}>
+                  <Button>Xem Thêm</Button>
+                </Link>
               </div>
-              <div className="Home__section__bottom">
-                <Grid
-                  col={4}
-                  mdCol={2}
-                  smCol={1}
-                  gap={20}
-                > 
-                  {
-                    bestSale.length > 0
-                    ? bestSale.map(item=>{
-                      return(
+
+            </div>
+            <div className="Home__section__bottom">
+              <Grid
+                col={4}
+                mdCol={2}
+                smCol={1}
+                gap={20}
+              >
+                {
+                  newProduct.length > 0
+                    ? newProduct.map(item => {
+                      return (
                         <ProductCand
                           key={v4()}
                           Pid={item.Pid}
@@ -145,23 +99,72 @@ const Home = props => {
                       )
                     })
                     : Array(8)
-                    .fill(0)
-                    .map(item=>{
-                      return(
-                        <ComponentLoading key={v4()}/>
+                      .fill(0)
+                      .map(item => {
+                        return (
+                          <ComponentLoading key={v4()} />
+                        )
+                      })
+                }
+              </Grid>
+            </div>
+          </div>
+        </Section>
+
+
+        {/* -------------------------------best sale--------------------------------- */}
+        <Section>
+          <div className="Home__section">
+            <div className="Home__section__top">
+              <div className="Home__section__wrapper">
+                <h2>Sản bán chạy</h2>
+                <Link to={"/Product"}>
+                  <Button>Xem Thêm</Button>
+                </Link>
+              </div>
+
+            </div>
+            <div className="Home__section__bottom">
+              <Grid
+                col={4}
+                mdCol={2}
+                smCol={1}
+                gap={20}
+              >
+                {
+                  bestSale.length > 0
+                    ? bestSale.map(item => {
+                      console.log(item)
+                      return (
+                        <ProductCand
+                          key={v4()}
+                          Pid={item.Pid}
+                          Name={item.Info.NameProduct}
+                          Description={item.Info.DescriptionProduct}
+                          Image={item.Info.Image}
+                          Price={item.Info.Price}
+                          sale={30}
+                        />
                       )
                     })
-                  }
-                </Grid>
-              </div>
+                    : Array(8)
+                      .fill(0)
+                      .map(item => {
+                        return (
+                          <ComponentLoading key={v4()} />
+                        )
+                      })
+                }
+              </Grid>
+            </div>
           </div>
-          </Section>
-          
-        </div>
-        
+        </Section>
+
       </div>
-      )
-    }
+
+    </div>
+  )
+}
 
 Home.propTypes = {}
 

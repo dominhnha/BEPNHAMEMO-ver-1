@@ -21,7 +21,7 @@ const Header = props => {
   const navBar = [
     {
       title: 'Trang chủ',
-      path: '/',
+      path: '/', 
     },
     {
       title: 'Sản phẩm',

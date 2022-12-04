@@ -107,6 +107,28 @@ const Search = props => {
   const handleSubmit = async(keywords)=>{
       if(keywords == ""){
         setPosts([])
+        toast.error('Bạn chưa nhập gì cả ! ', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          toast('🦄 Cùng nhau tìm kiếm sản phẩm khác nhé ', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+            setProducts([]);
+            setPosts([])
         return;
       }
       const data = await searchProduct(keywords,null,null);
@@ -146,6 +168,29 @@ const Search = props => {
   const handleClassify = async(Classify,name)=>{
     try{
       const data = await classifyProduct(Classify);
+      if(data.payload.length == 0){
+        toast.error('Sản phẩm hiện không kinh doanh ', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+          toast('🦄 Cùng nhau tìm kiếm sản phẩm khác nhé ', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            });
+            return;
+      }
       setProducts(data.payload);
       setPosts(data.payload)
       setKeywords(name)

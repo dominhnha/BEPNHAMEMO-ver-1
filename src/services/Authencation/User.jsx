@@ -112,7 +112,6 @@ export const setNewCart = async(uid,listProduct)=>{
 }
 
 //PurchaseHistory
-//PurchaseHistory
 export const AddPurchaseHistoryForUser = async(uid,status,Cart,ListProduct=[{pid:"",quantity:""}]) =>{ 
     const {emailOrPhone,Address,Payments,Total,PriceDiscount,
         FullName
@@ -125,22 +124,22 @@ export const AddPurchaseHistoryForUser = async(uid,status,Cart,ListProduct=[{pid
             Address:Address,
             Payments:Payments,
             FullName:FullName,
-            Email:emailOrPhone
+            Email:emailOrPhone,
         }
         if(status===true){
-            // await addDoc(db, CollectionName, uid,"PurchaseHistoryForUser");
+            
             const docRef = doc(db, CollectionName, uid);
             const colRef = collection(docRef, "PurchaseHistoryForUser");
             const PurDoc = await addDoc(colRef,initPur);
             for(let i=0;i<ListProduct.length;i++){
-                
                 const docRefP = doc(db,"Product",ListProduct[i].pid);
                 const QuantityProduct = await GetQuantityProduct(ListProduct[i].pid);
                 await updateDoc(docRefP,{
                     Quantity:(QuantityProduct-ListProduct[i].quantity).toString()})
                 await AddBestSell(ListProduct[i].pid,ListProduct[i].quantity);
-                await AddPurchaseHistory(uid,PurDoc.id);
+                
             }
+            await AddPurchaseHistory(uid,PurDoc.id,initPur);
         }
         else{
             const colRef = collection(db,"PurchaseHistory");
@@ -161,12 +160,12 @@ export const AddPurchaseHistoryForUser = async(uid,status,Cart,ListProduct=[{pid
         }
        
     }
-export const GetPurchaseHistoryByUser=async(uid,uPid)=>{
-    const docSnap = await getDoc(docRef);
-    const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
-    return await docSnap.data();
-    if(docSnap.exists())
-    return{
+    export const GetPurchaseHistoryByUser=async(uid,uPid)=>{
+        const docRef = doc(db, CollectionName,uid,"PurchaseHistoryForUser",uPid);
+        const docSnap = await getDoc(docRef);
+        if(docSnap.exists())
+            return await docSnap.data();
+        return{
             success: false,
             payload:"No Purchase History"
         }

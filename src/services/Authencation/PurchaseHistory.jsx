@@ -1,19 +1,19 @@
 import {db} from '../../Firebase__config'
-import { addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, serverTimestamp, setDoc, Timestamp,where } from "firebase/firestore";
-import { GetNameProduct, GetPriceProduct } from '../Product/Product';
-import { GetDiscountByID } from './Discount';
+import { addDoc, collection, doc, getDoc, updateDoc} from "firebase/firestore";
+
 
 const CollectionName = "PurchaseHistory"
 
-export const AddPurchaseHistory = async(uid,uPid)=>{
-    const docRef = doc(db, "User",uid,"PurchaseHistoryForUser",uPid);
-    const docSnap = await getDoc(docRef);
+export const AddPurchaseHistory = async(uid,uPid,PurchaseHistory)=>{
     const colRef = collection(db, CollectionName);
-    const initPur = {
+    const PurDoc = await addDoc(colRef,PurchaseHistory);
+    const docPur = await doc(db,"PurchaseHistory",PurDoc.id);
+    
+    await updateDoc(docPur,{
         Uid:uid,
-        PurchaseHistory:docSnap.data(),
-    }
-    await addDoc(colRef,initPur)
+    })
+    
+    
 }
 
 //get PurchaseHistory by user

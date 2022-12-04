@@ -1,6 +1,10 @@
 .Chart{
     display: flex;
     gap: 20px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     .Colection{
         width: 30%;
         max-height:85vh;
@@ -8,15 +12,39 @@
     }
     &__view{
         width: 70%;
+    } 
+    &__title{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        & i{
+            transition: all 0.5s ease;
+            border-radius: 50%;
+            padding: 10px;
+         
+           
+        }
+        &.active{
+            i{
+                transition: all 0.5s ease;
+                background-color: #FF8B04;
+                color: white;
+            }
+        }
+        &:hover{
+            i{
+                transition: all 0.5s ease;
+                background-color: #FF8B04;
+                color: white;
+            }
+        }
     }
-   
-   
-    
 }
 .Colection{
-   
+   min-height: 95vh;
     &__list{
-        max-height: 75vh;
+        max-height: 85vh !important;
         padding: 10px;
         overflow-y: auto;
         &::-webkit-scrollbar {
@@ -49,6 +77,20 @@
             font-weight: 600    ;
         }
         &:hover{
+            transition: all 0.5s ease;
+            background-color: #FF8B04;
+            color: white;
+            p{
+               
+                color: rgb(255, 255, 255);
+            }
+            h2{
+                
+                color: rgb(255, 255, 255);
+                
+            }
+        }
+        &.active{
             transition: all 0.5s ease;
             background-color: #FF8B04;
             color: white;

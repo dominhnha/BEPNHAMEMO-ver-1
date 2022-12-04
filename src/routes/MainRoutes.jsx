@@ -39,7 +39,14 @@ const MainRoutes = props => {
       </Routes>
       )
   }
-  
+  // return(   
+  //   <Routes>
+  //      <Route exact path='/' element={<Admin/>} >
+  //         <Route exact index element={<Chart/>}></Route>
+  //         <Route exact path='Product' element={<AddProduct/>}></Route>
+  //      </Route>
+  //   </Routes>
+  //   )
   return (
     <Routes>
         <Route exact path='/' element={<Home/>} />

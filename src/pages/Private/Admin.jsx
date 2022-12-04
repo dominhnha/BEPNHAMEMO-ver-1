@@ -11,15 +11,10 @@ const Admin = props => {
           <SideBar/>
         </div>
         <div className="Admin__view">
-          <Section>
-            <SectionTitle>
-                Chart line product
-            </SectionTitle>
+          <>
             <Outlet/>
-          </Section>
+          </> 
         </div>
-        
-        
     </div>
   )
 }

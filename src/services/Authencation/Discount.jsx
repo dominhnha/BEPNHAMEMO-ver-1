@@ -18,7 +18,7 @@ export const AddDiscount = async(newDiscount) =>{
     const initDiscount = {
         NameDiscount:NameDiscount,
         DescriptionDiscount:DescriptionDiscount,
-        PercentDiscount:PercentDiscount,
+        PercentDiscount:PercentDiscount*100,
         Exp: await Timestamp.fromDate(new Date(Exp)),
         Mfg: await Timestamp.fromDate(new Date(Mfg)),
         Quantity:Quantity,
@@ -42,17 +42,37 @@ export const AddDiscount = async(newDiscount) =>{
 EXP: expiry date
 MFG: manufacturing date
  */
-//Discount 10% product
+/*
+Discount for product conditionsApply > quantitySoldOrMonth Before
+*/
 export const DiscountForProduct = async(newDiscount)=>{
     const {NameDiscount,PercentDiscount,conditionsApply} = newDiscount;
-    const initDiscount10={
+    const initDiscount={
         NameDiscount:NameDiscount,
         PercentDiscount:PercentDiscount,
         ConditionsApply:conditionsApply
     }
-    return await addDoc(collection(db, CollectionName), initDiscount10)
+    return await addDoc(collection(db, CollectionName), initDiscount)
 }
 
+export const GetConditionsApply = async(dpid)=>{
+    const docRef = doc(db,CollectionName,dpid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        return {
+            success: true,
+            payload: {
+                Info: docSnap.data().ConditionsApply,
+            }
+        }
+    } else {
+        // doc.data() will be undefined in this case
+        return {
+            success: false,
+            payload: "No such document!",
+        }
+    }
+}
 //Get PercentDiscount by id
 export const GetPercentDiscountByID = async(did) =>{
     const docRef = doc(db,CollectionName,did);

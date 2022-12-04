@@ -78,6 +78,19 @@ const Payment = props => {
           let discount = 0;
           if(values.voucher.trim() != ""){
              discount =await CheckDiscount(values.voucher.trim())
+             if(discount == 0){
+              toast.error('Mã giảm giá không hợp lệ', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
+              return;
+             }
           } 
           total=total*(1-discount);
           // user login
