@@ -11,14 +11,17 @@ const ProductCand = props => {
     const [Description,setDescription] = useState(null)
     const [Image,setImage] = useState(null)
     const [Price,setPrice] = useState(null)
+    const [discount,setDiscount] = useState(0)
     useEffect(()=>{
         setPid(props.Pid ? props.Pid : null)
         setImage(props.Image ? props.Image[0] : null)
         setDescription(props.Description ?props.Description : null)
         setName(props.Name ? props.Name : null)
         setPrice(props.Price ?  props.Price : null)
+        setDiscount(props.Discount ? props.Discount : 0)
+        
     },[])
-   
+   console.log()
   return (
     <Link to={ Pid ? `/Product/${Pid}` :"/"} className="ProductCand">
         
@@ -50,8 +53,8 @@ const ProductCand = props => {
             {
                 Price
                 ? <div className="ProductCand__bottom__warpper">
-                    <div className="ProductCand__price">{ formatNumber (Price) }₫</div>
-                    <div className="ProductCand__price--sale">350,000₫</div>
+                    <div className="ProductCand__price">{discount !== 0 ? formatNumber ((Price*(1-discount))):formatNumber (Price) }₫</div>
+                    <div className="ProductCand__price--sale">{discount !== 0 ? formatNumber (Price) :null } {discount !== 0 ?"₫":""}</div>
                 </div>
                 : <Skeleton ></Skeleton>
             }

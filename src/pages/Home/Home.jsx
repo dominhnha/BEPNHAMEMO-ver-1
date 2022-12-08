@@ -86,6 +86,7 @@ const Home = props => {
                 {
                   newProduct.length > 0
                     ? newProduct.map(item => {
+                      console.log(item.Info.Discount)
                       return (
                         <ProductCand
                           key={v4()}
@@ -94,6 +95,7 @@ const Home = props => {
                           Description={item.Info.DescriptionProduct}
                           Image={item.Info.Image}
                           Price={item.Info.Price}
+                          Discount={item.Info.Discount ? item.Info.Discount : 0}
                           sale={30}
                         />
                       )
@@ -143,6 +145,7 @@ const Home = props => {
                           Description={item.Info.DescriptionProduct}
                           Image={item.Info.Image}
                           Price={item.Info.Price}
+                          Discount={item.Info.Discount ? item.Info.Discount : 0}
                           sale={30}
                         />
                       )

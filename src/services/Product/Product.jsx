@@ -5,7 +5,7 @@ import { GetConditionsApply, GetPercentDiscountByID } from '../Authencation/Disc
 
 const CollectionName = "Product"
 
-export const AddProduct = async (newProduct) => {
+export const AddNewProduct = async (newProduct) => {
     const {
         NameProduct,
         DescriptionProduct,
@@ -23,7 +23,7 @@ export const AddProduct = async (newProduct) => {
         Ingerdient: Ingerdient,
         Price: Price,
         Quantity: Quantity,
-        ImageIdProduct: ImageIdProduct,
+        Image: ImageIdProduct,
         exp: Timestamp.fromDate(new Date(exp)),
         mfg: Timestamp.fromDate(new Date(mfg)),
         Classify: Classify,

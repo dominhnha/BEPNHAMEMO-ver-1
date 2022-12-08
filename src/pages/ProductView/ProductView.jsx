@@ -32,7 +32,7 @@ import { CartContext } from '../../contexts/CartContextProvider';
 import { PaymentContext } from '../../contexts/PaymentContextProvider';
 import ProductCand from '../../components/ProductCand/ProductCand';
 import ComponentLoading from '../../components/LoadingSkeleton/ComponentLoading/ComponentLoading';
-
+import {formatNumber} from '../../utils/Format'
 
 
 const ProductView = props => {
@@ -43,6 +43,7 @@ const ProductView = props => {
   const [quantity, setQuantity] = useState(1);
   const [product,setProduct] = useState(null);
   const [Classify,setClassify] = useState([]);
+
    // get Slug by Url
    const {slug} = useParams();
    useEffect(()=>{
@@ -90,12 +91,13 @@ const ProductView = props => {
       theme: "light",
       });
     try{
+      
       Cartdispatch({
         type:CART__UPDATA,
         payload:{
             Pid:slug,
             Quantity:quantity,
-            Price:product.Info.Price,
+            Price:product.Info.Discount ? (product.Info.Price *(1-product.Info.Discount)):product.Info.Price ,
             Image:product.Info.Image,
             NameProduct:product.Info.NameProduct,
         }         
@@ -114,7 +116,7 @@ const ProductView = props => {
         payload:{
             Pid:slug,
             Quantity:quantity,
-            Price:product.Info.Price,
+            Price:product.Info.Discount ? (product.Info.Price *(1-product.Info.Discount)):product.Info.Price ,
             Image:product.Info.Image,
             NameProduct:product.Info.NameProduct,
         }    
@@ -238,8 +240,8 @@ const ProductView = props => {
                           product != null
                           ? 
                           <>
-                            <p className="ProductView__discount">{product.Info.Price}₫</p>
-                            <p className="ProductView__cur">{(product.Info.Price+1000)}₫</p>
+                            <p className="ProductView__discount">{formatNumber(product.Info.PriceDiscount ? product.Info.PriceDiscount : product.Info.Price )}₫</p>
+                            <p className="ProductView__cur">{`${ product.Info.PriceDiscount ? formatNumber(product.Info.Price):""}`} {product.Info.PriceDiscount ?"₫":"" }</p>
                           </>
                           : <EffectLoanding/>
                         }

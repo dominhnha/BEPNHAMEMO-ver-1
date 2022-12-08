@@ -44,21 +44,21 @@ const Layout = props => {
   return (
     <BrowserRouter>
         <Suspense fallback={<Loading/>}>
-          {
+          {/* {
             Authur.success == true && Authur.payload.user.Role == "Admin"
             ? null
             : <Header/>
-          }
+          } */}
             <main>
-                <div className={`App ${Authur.success == true && Authur.payload.user.Role == "Admin" ?"active":""} `}>
+                <div className={`App ${Authur.success == true && Authur.payload.user.Role == "Admin" ?"active":""} active `}>
                   <MainRoutes/>
                 </div>
             </main>
-          {
+          {/* {
             Authur.success == true && Authur.payload.user.Role == "Admin"
             ? null
             :<Footer/>
-          }
+          } */}
         
         </Suspense>     
     

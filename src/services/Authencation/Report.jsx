@@ -104,37 +104,51 @@ export const RevenuePerMonth = async () => {
 }
 
 export const GetQuantitySoldProductOrMonth = async (pid, month, year) => {
-    if (month >= 1 && month <= 12) {
-        const date = new Date(year, month - 1);
-        const dateM = date.toLocaleString("en", { month: "long" });
-        const dateY = date.getFullYear();
-        const querySubNameID = dateM + dateY;
-        const querySubName = dateM + " " + dateY;
-        const docRefQuan = doc(db, CollectionName, revID, querySubName, querySubNameID);
-        const docSnap = await getDoc(docRefQuan);
-        if (docSnap.exists()) {
-            for (let i = 0; i < docSnap.data().Item.length; i) {
-                if (pid === docSnap.data().Item[i].Pid)
-                    return {
-                        success: true,
-                        payload: docSnap.data()
+    try{
+        if (month >= 1 && month <= 12) {
+            const date = new Date(year, month - 1);
+            const dateM = date.toLocaleString("en", { month: "long" });
+            const dateY = date.getFullYear();
+            const querySubNameID = dateM + dateY;
+            const querySubName = dateM + " " + dateY;
+            const docRefQuan = doc(db, CollectionName, revID, querySubName, querySubNameID);
+            const docSnap = await getDoc(docRefQuan);
+            if (docSnap.exists()) {
+                console.log("2",docSnap.data())
+                let total = 0;
+                docSnap.data().Item.map(item=>{
+                    if(item.Pid === pid){
+                        total += item.QuantitySold;
                     }
+                })
+
+                return {
+                    success: true,
+                    payload: total
+                }
             }
+            else {
+                return {
+                    success: false,
+                    payload: "No such document!"
+                }
+            }
+    
         }
         else {
             return {
                 success: false,
-                payload: "No such document!"
+                payload: ""
             }
         }
-
-    }
-    else {
         return {
             success: false,
-            payload: ""
+            payload: 0
         }
+    }catch(err){
+        console.log(err);
     }
+    
 }
 // get total number 
 export const GetTotalQuantitySoldOrMonth = async (month, year) => {

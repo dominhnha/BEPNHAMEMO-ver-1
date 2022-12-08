@@ -17,58 +17,76 @@ import Section, { SectionBody, SectionTitle } from '../Section/Section';
 import "./Chart.scss"
 import { useEffect } from 'react';
 import { GetAllProduct } from '../../services/Product/Product';
-import { GetTotalQuantitySoldOrMonth } from '../../services/Authencation/Report';
-const chartData = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ],
-  datasets: [
-    {
-      data: [86, 114, 106, 106, 107, 111, 133, 44, 77, 22, 77, 11],
-      label: "Total",
-      fill: false,
-      borderColor: "#FFC888",
-      backgroundColor: "#FF8B04",
-      radius: 4,
-      hoverRadius: 5,
-      tension: 0.1
+import { GetQuantitySoldProductOrMonth, GetTotalQuantitySoldOrMonth } from '../../services/Authencation/Report';
+const chartData =(listData = [0,0,0,0,0,0,0,0,0,0,0,0])=>{
+  return {
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    datasets: [
+      {
+        data: listData,
+        label: "Total",
+        fill: false,
+        borderColor: "#FFC888",
+        backgroundColor: "#FF8B04",
+        radius: 4,
+        hoverRadius: 5,
+        tension: 0.1
+      },
+  
+    ],
+  
+  };
+} 
+const listMonth = [1,2,3,4,5,6,7,8,9,10,11,12]
+const options = {
+  responsive: true,
+  interaction: {
+    intersect: false,
+    mode: "x"
+  },
+  hover: {
+    mode: "index",
+    interactive: false
+  },
+  plugins: {
+    legend: {
+      position: "top"
     },
+    title: {
+      display: true,
+      text: "total"
+    },
+    tooltip: {
+      mode: "x",
+      yAlign: "bottom"
+    }
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false
 
-  ],
+    /*, your other options*/
+
+  }
 
 };
-const listMonth = [1,2,3,4,5,6,7,8,9,10,11,12]
 const Charts = props => {
   const [Product, setProduct] = useState([])
   const [active, SetActive] = useState(null)
-  const [chart,setChart] = useState(chartData)
-  // get All product
-  useEffect(() => {
-    const getProduct = async () => {
-      const data = await GetAllProduct();
-      if (data.success == true) {
-        setProduct(data.payload)
-      }
-      console.log(data)
-    }
-    getProduct()
-  }, [])
-  // checked active product
-  const handleActive = useCallback((Pid) => {
-    SetActive(Pid)
-  }, [active])
-
+  const [chart,setChart] = useState(chartData())
   Chart.register(
     CategoryScale,
     LinearScale,
@@ -79,68 +97,79 @@ const Charts = props => {
     Tooltip,
     Filler
   );
-
-  const options = {
-    responsive: true,
-    interaction: {
-      intersect: false,
-      mode: "x"
-    },
-    hover: {
-      mode: "index",
-      interactive: false
-    },
-    plugins: {
-      legend: {
-        position: "top"
-      },
-      title: {
-        display: true,
-        text: "total"
-      },
-      tooltip: {
-        mode: "x",
-        yAlign: "bottom"
-      }
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false
-
-      /*, your other options*/
-
-    }
-
-  };
-  const getTotal = async()=>{
-
-  }
-
-  useEffect(()=>{
-    const getData = async()=>{
+  // get all total in years
+  const getAllTotal = async()=>{
       const date = new Date().getFullYear();
       const listTotal = listMonth.map(async(item)=>{
         const data =  await GetTotalQuantitySoldOrMonth(item,date);
         return data;
       })
       const data = await Promise.all(listTotal)
-      console.log(data)
-    
       
+      const initListMonth = data.map(item=>{
+        return item.payload;
+      })
+      setChart(chartData(initListMonth))
+      console.log("a")
+  }
+
+  const getPidTotal = useCallback(async(Pid)=>{
+    try{
+      const date = new Date().getFullYear();
+      const listTotal = listMonth.map(async(item)=>{
+        const data =  await GetQuantitySoldProductOrMonth(Pid,item,date);
+        return data;
+      })
+      const data = await Promise.all(listTotal)
+      const initListMonth = data.map(item=>{
+        return item.payload;
+      })
+     
+      setChart(chartData(initListMonth))
+     
+    }catch(e){
+      console.log(e)
+    }
+  },[active]) 
+   // get All product
+   useEffect(() => {
+    const getProduct = async () => {
+      const data = await GetAllProduct();
+      if (data.success == true) {
+        setProduct(data.payload)
+      }
       
     }
-   getData(); 
-  })
+    const data = GetQuantitySoldProductOrMonth("6idh8CgVd3QNPgaeFzop",3,2022)
+    getProduct()
+    // getPidTotal("6lyk7W5ubcLF4DRu2hlR")
+  }, [])
+  
+  useEffect(()=>{
+    getAllTotal()
+  },[])
+
+  // checked active product
+  const handleActive = useCallback((Pid) => {
+    SetActive(Pid)
+    getPidTotal(Pid)
+  }, [active])
+
+  const handleRemoveActive = useCallback(() => {
+    SetActive(null)
+    getAllTotal()
+  },[])
+
   return (
     <div className='Chart'>
       <div className='Colection'>
         <>
           <SectionTitle>
-            <div className={`Chart__title ${active == null ? "active" : ""}`}>
+            <div className={`Chart__title ${active == null ? "active" : ""}`} onClick={(e)=>handleRemoveActive()}>
               <span>
                 Colection
               </span>
-              <i class={`bx bx-home `}></i>
+              <i class={`bx bx-home `} ></i>
             </div>
           </SectionTitle>
           <SectionBody>
