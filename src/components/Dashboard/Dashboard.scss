@@ -1,0 +1,104 @@
+@import "../../sass/variables";
+@import "../../sass/mixin";
+@import "../../sass/base";
+.bold {
+    font-weight: bold;
+}
+// ------------------- Main --------------------
+main {
+    margin-top: 14px;
+    h1{
+        margin-bottom: 16px;
+        font-size:30px;
+        font-weight:700;
+    }
+}
+.Dashboard{
+    // ----------------------------- insights --------------------------------
+    &__insights{
+        padding: 0 12px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    &__sales{
+        padding: 18px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border-radius: 20px;
+        span{
+            background-color: #ff8b04;
+            padding: 5px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 20px;
+        }
+        &__middle{
+            h3{
+                font-size:20px;
+                font-weight:500;
+            }
+            h1{
+                font-size:30px;
+                font-weight:800;
+            }
+            
+                
+        }
+        &__text-muted{
+            color: #ccc;
+            font-size:12px;
+            margin-top: 13px;
+            display:block;
+        }
+    }
+    // ------------------- recent orders -------------------
+    &__recent-orders{
+        margin-top:20px;
+        h2{
+            margin-bottom: 8px;
+            font-size:20px;
+            font-weight:600;
+        }
+        table{
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            width: 100%;
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            tbody{
+                td{
+                    height: 60px;
+                    border-bottom: 1px solid rgba(132, 139, 200, 0.18);
+                    // color: #677483;
+                }
+                tr:last-child{
+                    td{
+                        border: none;
+                    }
+                }
+            }
+        }
+        a{
+            text-align: center;
+            display: block;
+            margin: 10px auto;
+            color: #000;
+        }
+    }
+}
+
+.text-can-hover{
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+.text-can-hover:hover{
+    color: #ff8b04;
+}
+
+.detail-table{
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}

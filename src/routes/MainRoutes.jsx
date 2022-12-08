@@ -5,6 +5,8 @@ import { useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContextProvider'
 import Chart from '../components/Chart/Charts'
 import AddProduct from '../components/AddProduct/AddProduct'
+import ManageUsers from '../components/ManageUsers/ManageUsers'
+import Dashboard from '../components/Dashboard/Dashboard'
 
 // import Components
 
@@ -33,17 +35,21 @@ const MainRoutes = props => {
     return(   
       <Routes>
          <Route exact path='/' element={<Admin/>} >
-            <Route exact index element={<Chart/>}></Route>
-            <Route exact path='Product' element={<AddProduct/>}></Route>
-         </Route>
+          <Route exact index element={<Dashboard />}></Route>
+          <Route exact path='Chart' element={<Chart/>}></Route>
+          <Route exact path='Product' element={<AddProduct/>}></Route>
+          <Route exact path='User' element={<ManageUsers />}></Route>
+       </Route>
       </Routes>
       )
   }
   return(   
     <Routes>
        <Route exact path='/' element={<Admin/>} >
-          <Route exact index element={<Chart/>}></Route>
+          <Route exact index element={<Dashboard />}></Route>
+          <Route exact path='Chart' element={<Chart/>}></Route>
           <Route exact path='Product' element={<AddProduct/>}></Route>
+          <Route exact path='User' element={<ManageUsers />}></Route>
        </Route>
     </Routes> 
     )

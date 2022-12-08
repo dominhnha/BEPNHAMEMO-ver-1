@@ -11,8 +11,13 @@ const SideBar = props => {
     const [active,setActive] = useState(false)
     const listNavigation = [
         {
+            icon: "bx bxs-dashboard",
+            path: "/",
+            title: "Dashboard"
+        },
+        {
             icon:"bx bx-bar-chart-alt-2",
-            path:"/",
+            path:"/Chart",
             title:"Chart" 
         },
         {
