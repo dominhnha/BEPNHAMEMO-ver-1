@@ -1,4 +1,4 @@
-import {  arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, setDoc, updateDoc, Timestamp } from 'firebase/firestore'
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, setDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '../../Firebase__config'
 import { GetAllProduct, GetNameProduct } from '../Product/Product'
 
@@ -14,6 +14,7 @@ const docRef = doc(db, CollectionName, revID, subName, subID);
 /*
 Add RevenuePerMonth
 */
+
 
 export const AddRevenuePerMonth = async () => {
 
@@ -65,11 +66,10 @@ export const AddProductToRevenue = async (pid, quantity) => {
     })
 }
 
+
 export const RevenuePerMonth = async () => {
-    const docsSnap = await getDocs(collection(db, "PurchaseHistory"))
+    const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
     const ListPurchase = [];
-    const month = Now.getMonth() + 1;
-    const year = Now.getFullYear();
     docsSnap.forEach(doc => {
         ListPurchase.push({
             PurId: doc.id,
@@ -78,6 +78,9 @@ export const RevenuePerMonth = async () => {
             Item: doc.data().Item
         })
     })
+    const month = Now.getMonth + 1;
+    const year = Now.getFullYear();
+
     const ListProduct = await (await GetAllProduct()).payload;
     const ListItem = [];
     for (let i = 0; i < ListPurchase.length; i++) {
@@ -117,7 +120,7 @@ export const GetQuantitySoldProductOrMonth = async (pid, month, year) => {
                 if (pid === docSnap.data().Item[i].Pid)
                     return {
                         success: true,
-                        payload: docSnap.data()
+                        payload: docSnap.data().Item[i].QuantitySold
                     }
             }
         }
@@ -196,3 +199,83 @@ export const GetRevenuePerMonth = async (month, year) => {
         }
     }
 }
+
+//Get the total price for month and year.
+
+export const GetTotalPriceForMonth = async (month) => {
+    const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
+    const ListPurchase = [];
+    docsSnap.forEach(doc => {
+        ListPurchase.push({
+            PurId: doc.id,
+            Month: doc.data().DayPurchased.toDate().getMonth() + 1,
+            Year: doc.data().DayPurchased.toDate().getFullYear(),
+            Item: doc.data().Item,
+            Total:doc.data().Total,
+            Discount: doc.data().Discount,
+            Payments:doc.data().Payment
+        })
+    })
+    const ListItem = [];
+    for (let i = 0; i < ListPurchase.length; i++) {
+        if (month === ListPurchase[i].Month) {
+            ListItem.push({
+                Discount: ListPurchase[i].Discount,
+                Payment:ListPurchase[i].Payments,
+                Item:ListPurchase[i].Item,
+                ToTal:ListPurchase[i].Total
+            });
+
+        }
+    }
+    let TotalPrice =0;
+    for (let i = 0; i < ListItem.length; i++) {
+        TotalPrice+=ListItem[i].ToTal;
+    }
+    ListItem.push(TotalPrice)
+    return{
+        success: true,
+        payload:ListItem,
+    }
+
+}
+
+export const GetTotalPriceForYear = async (year) => {
+    const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
+    const ListPurchase = [];
+    docsSnap.forEach(doc => {
+        ListPurchase.push({
+            PurId: doc.id,
+            Month: doc.data().DayPurchased.toDate().getMonth() + 1,
+            Year: doc.data().DayPurchased.toDate().getFullYear(),
+            Item: doc.data().Item,
+            Total:doc.data().Total,
+            Discount: doc.data().Discount,
+            Payments:doc.data().Payment
+        })
+    })
+    const ListItem = [];
+    for (let i = 0; i < ListPurchase.length; i++) {
+        if (year === ListPurchase[i].Year) {
+            ListItem.push({
+                Discount: ListPurchase[i].Discount,
+                Payment:ListPurchase[i].Payments,
+                Item:ListPurchase[i].Item,
+                ToTal:ListPurchase[i].Total
+            });
+
+        }
+
+    }
+    let TotalPrice =0;
+    for (let i = 0; i < ListItem.length; i++) {
+        TotalPrice+=ListItem[i].ToTal;
+    }
+    ListItem.push(TotalPrice)
+    return{
+        success: true,
+        payload:ListItem,
+    }
+
+}
+
