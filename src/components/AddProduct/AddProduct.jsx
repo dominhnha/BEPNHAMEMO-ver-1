@@ -147,6 +147,7 @@ const AddProduct = props => {
               });
             return;
           }
+          // add new product
           const initNewProduct = await AddNewProduct({
             NameProduct:values.NameProduct,
             DescriptionProduct:values.DescriptionProduct,
@@ -158,10 +159,6 @@ const AddProduct = props => {
             mfg:values.mfg,
             Classify:values.Classify,
           })
-          
-          // setProduct([...Product,initNewProduct.payload])
-         
-          
           toast.success(`🦄 add complete ${values.NameProduct}`, {
             position: "top-right",
             autoClose: 5000,
@@ -172,15 +169,18 @@ const AddProduct = props => {
             progress: undefined,
             theme: "light",
             });
+            // reset ui 
             editProduct()
             formik.values.NameProduct = ""
             formik.values.DescriptionProduct = ""
             formik.values.Ingerdient = ""
             formik.values.NameProduct = ""
+            formik.values.Classify = ""
             formik.values.Price = 1
             formik.values.Quantity = 1
             formik.values.exp = ""
             formik.values.mfg = ""
+
         }else{
           console.log("updata ui")
         }
@@ -436,10 +436,13 @@ const AddProduct = props => {
                 {
                   formProduct && formProduct.Info.Image.map((item, index) => {
                     return (
-                      <li className='AddProduct__item' key={`${index}__img`}>
+                      <li className='AddProduct__item' key={`${index}__img`} >
                         <img
                           src={item}
                           alt="IMG" />
+                          <div className="AddProduct__item__remove">
+                          <i class='bx bxs-minus-circle'></i>
+                          </div>
                       </li>
                     )
                   })

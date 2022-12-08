@@ -78,8 +78,29 @@
         align-items: center;
         border-radius: 8px;
         background-color: #FF8B04;
+        position: relative;
         
         cursor: pointer;
+        & > &__remove{
+            position: absolute;
+           
+            top: -8px;
+            right: -10px;
+          
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            & > i{
+                
+                font-size: 27px;
+                color: red;
+                background-color: rgb(255, 255, 255);
+              
+                
+            }
+        }
         &:hover{
             opacity: 0.5;
             background-color: #ffae51;
