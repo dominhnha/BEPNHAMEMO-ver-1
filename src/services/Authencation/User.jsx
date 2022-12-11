@@ -53,8 +53,40 @@ export const GetUserCollection = async(uid)=>{
     }
 }
 
-export const UpdataUserCollection = async(uid,user)=>{
-    const {Email,Address,Number,ImgUser,FullName,Birthdate,Role} = user;
+export const UpdateUser = async(uid,updateUser)=>{
+    const {
+        Email,
+        Address,
+        Number,
+        ImgUser,
+        firstname,
+        lastname,
+        Birthdate,
+        Role
+    } = updateUser;
+    const docRef = doc(db, CollectionName,uid);
+    return await updateDoc(docRef,{
+        Email:Email,
+        Address:Address,
+        Number:Number,
+        ImgUser:ImgUser,
+        FullName:`${firstname} ${lastname}`,
+        Birthdate: Birthdate,
+        Role:Role,
+    })
+    .then(docRef =>{
+        return{
+            success: true,
+            payload:updateUser
+        }
+    })
+    .catch(e=>{
+        return{
+            success: false,
+            payload:e
+        }
+    })
+
     
 }
 export const AddToCart = async(value)=>{
