@@ -6,7 +6,6 @@ import {
    } from "firebase/auth";
 
 import {auth} from '../../Firebase__config' 
-
 // Sign Up website by email and password
 export const AddUserAuthencation = async(user) =>{
     try{
@@ -53,3 +52,18 @@ export const AddUserAuthencation = async(user) =>{
       return data;
 }
 
+export const SignOut = async()=>{
+    signOut(auth).then(() => {
+        return {
+            success: true,
+            payload:"Sign-out successful",
+        }
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+      return {
+        success: false,
+        payload:error,
+    }
+    });
+}
