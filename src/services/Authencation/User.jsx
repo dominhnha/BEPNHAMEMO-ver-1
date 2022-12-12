@@ -4,7 +4,6 @@ import { AddBestSell, GetNameProduct, GetPriceProduct, GetProductById, GetQuanti
 import { CheckDiscount, GetDiscountByID, GetPercentDiscountByID } from './Discount';
 import { AddPurchaseHistory } from './PurchaseHistory';
 
-
 const CollectionName = "User"
 
 
@@ -55,24 +54,20 @@ export const GetUserCollection = async(uid)=>{
 
 export const UpdateUser = async(uid,updateUser)=>{
     const {
-        Email,
         Address,
         Number,
         ImgUser,
         firstname,
         lastname,
-        Birthdate,
-        Role
+        Birthdate
     } = updateUser;
     const docRef = doc(db, CollectionName,uid);
     return await updateDoc(docRef,{
-        Email:Email,
         Address:Address,
         Number:Number,
         ImgUser:ImgUser,
         FullName:`${firstname} ${lastname}`,
         Birthdate: Birthdate,
-        Role:Role,
     })
     .then(docRef =>{
         return{
@@ -213,3 +208,4 @@ export const GetQuantity=async(uid,uPid)=>{
         payload:"No Purchase History"
     }
 }
+
