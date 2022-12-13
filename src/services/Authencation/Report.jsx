@@ -1,6 +1,9 @@
 import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, setDoc, updateDoc, Timestamp } from 'firebase/firestore'
 import { db } from '../../Firebase__config'
 import { GetAllProduct, GetNameProduct } from '../Product/Product'
+import { getWeekNumber } from 'react-calendar/dist/esm/shared/dates';
+import { CALENDAR_TYPES } from 'react-calendar/dist/esm/shared/const';
+
 
 
 const CollectionName = "RevenuePerMonth"
@@ -279,3 +282,35 @@ export const GetTotalPriceForYear = async (year) => {
 
 }
 
+//getWeek
+/*
+npm install react-calendar
+*/
+//Get total price for week
+export const GetTotalPriceForWeek = async()=>{
+    const week = getWeekNumber(Now,CALENDAR_TYPES.US);
+    const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
+    const ListPurchase = [];
+    docsSnap.forEach(doc => {
+        ListPurchase.push({
+            PurId: doc.id,
+            Week:getWeekNumber(doc.data().DayPurchased.toDate(),CALENDAR_TYPES.US),
+            Total:doc.data().Total
+        })
+    })
+    let Total =0;
+    for(let i=0; i < ListPurchase.length; i++) {
+        if(week ===ListPurchase[i].Week){
+            Total+=ListPurchase[i].Total;
+        }
+    }
+    
+    return{
+        success: true,
+        payload:{
+            Week:week,
+            Year:Now.getFullYear(),
+            TotalPrice:Total
+        }
+    }
+}
