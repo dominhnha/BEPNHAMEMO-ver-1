@@ -7,6 +7,7 @@ export const AuthReducer = (state, action) =>{
     const {type,payload} = action;
     switch(type){
         case AUTH__SET:{
+            console.log(payload)
             return state = {
                 success:true,
                 payload:payload.user,

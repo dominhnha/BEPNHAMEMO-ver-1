@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import "./AddProduct.scss"
 import Section, { SectionBody, SectionTitle } from '../Section/Section'
-import { AddNewProduct, GetAllProduct, GetProductById } from '../../services/Product/Product'
+import { AddNewProduct, deleteProduct, GetAllProduct, GetProductById, updateProduct } from '../../services/Product/Product'
 import { useCallback } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from "yup"
@@ -46,7 +46,7 @@ const AddProduct = props => {
       setProduct(data.payload)
     }
   }
-  useEffect(() => { 
+  useEffect(() => {
     getProduct()
   }, [])
   // find curreent item in Product
@@ -71,38 +71,82 @@ const AddProduct = props => {
     setStatus(false)
   }, [active])
 
+  const handleRemoveImage = useCallback((Image) => {
+    if (formProduct.Info.Image.length > 1) {
+      const initNewProduct = {
+        ...formProduct,
+        Info: {
+          ...formProduct.Info,
+          Image: formProduct.Info.Image.filter(image => { return image !== Image })
+        }
+      }
+      setFormProduct(initNewProduct)
+    } else {
 
-  const addNewProduct = useCallback(() => {
-    // code edit is here 
-    console.log("DaTaFrom", formProduct)
-    // formik.values.Info.NameProduct = "oke";
-    console.log(formik.values)
-    setStatus(true)
+    }
   }, [formProduct])
+
+  const handleUploadImage = useCallback(async (Avatar) => {
+    try {
+      const initImage = await UploadImagetoCloud(Avatar);
+      console.log(initImage)
+      const initNewProduct = {
+        ...formProduct,
+        Info: {
+          ...formProduct.Info,
+          Image: [...formProduct.Info.Image, initImage.payload]
+        }
+      }
+      setFormProduct(initNewProduct)
+
+    } catch (e) {
+      console.log(e)
+    }
+
+  })
+
 
   const editProduct = useCallback(() => {
     setActive(null);
     setFormProduct(initProduct);
   }, [active, formProduct]);
 
-  const handleUploadImage = useCallback(async (Avatar) => {
-    try{
-      const initImage = await UploadImagetoCloud(Avatar);
-      console.log(initImage)
-      const initNewProduct =  {
-        ...formProduct,
-        Info:{
-          ...formProduct.Info,
-          Image:[...formProduct.Info.Image,initImage.payload]
-        }
-      }
-      setFormProduct(initNewProduct )
-      
-    } catch(e){
-      console.log(e)
-    }
-     
-  })
+  const handleRemoveProduct = async(e, Pid) => {
+    e.preventDefault()
+    console.log(e,Pid)
+    await deleteProduct(Pid)
+    await getProduct()
+    await editProduct()
+
+    toast.success(`🦄 delete complete ${Pid}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+
+  const handleBackupProduct = useCallback(
+    async(product)=>{
+      console.log("s",product)
+      formik.setFieldValue("NameProduct",product.Info.NameProduct)
+      formik.setFieldValue("Pid",product.Pid)
+      formik.setFieldValue("Classify",product.Info.Classify)
+      formik.setFieldValue("DescriptionProduct",product.Info.DescriptionProduct)
+      formik.setFieldValue("DayProduce",product.Info.DayProduce)
+      formik.setFieldValue("Ingerdient",product.Info.Ingerdient)
+      formik.setFieldValue("Price",product.Info.Price)
+      formik.setFieldValue("Quantity",product.Info.Quantity)
+      formik.setFieldValue("exp",formatTimestamptoDate(product.Info.exp != "" ? product.Info.exp.toDate() : ""))
+      formik.setFieldValue("mfg",formatTimestamptoDate(product.Info.mfg != "" ? product.Info.mfg.toDate() : ""))
+      setStatus(true)
+    },[formProduct]
+  ) 
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -118,23 +162,23 @@ const AddProduct = props => {
       Pid: formProduct.Pid,
     },
 
-    validationSchema: Yup.object({
-      Classify: Yup.string().required("Vui lòng nhập loại"),
-      DescriptionProduct:Yup.string().required("Vui lòng nhập Mô tả"),
-      Ingerdient:Yup.string().required("Vui lòng nhập nguyên liệu"),
-      NameProduct:Yup.string().required("Vui lòng nhập tên"),
-      Price:Yup.number().required("Vui lòng nhập giá"),
-      Quantity:Yup.number().required("Vui lòng nhập số lượng"),
-      exp:Yup.string().required("Vui lòng nhập thời gian sử dụng"),
-      mfg:Yup.string().required("Vui lòng nhập thời gian sử dụng"),
-    }),
+    // validationSchema: Yup.object({
+    //   Classify: Yup.string().required("Vui lòng nhập loại"),
+    //   DescriptionProduct: Yup.string().required("Vui lòng nhập Mô tả"),
+    //   Ingerdient: Yup.string().required("Vui lòng nhập nguyên liệu"),
+    //   NameProduct: Yup.string().required("Vui lòng nhập tên"),
+    //   Price: Yup.number().required("Vui lòng nhập giá"),
+    //   Quantity: Yup.number().required("Vui lòng nhập số lượng"),
+    //   exp: Yup.string().required("Vui lòng nhập thời gian sử dụng"),
+    //   mfg: Yup.string().required("Vui lòng nhập thời gian sử dụng"),
+    // }),
     onSubmit: async (values) => {
-      try{
-        console.log("value",values)
-        
-        if(active == null){
+      try {
+        console.log("value", values)
+
+        if (active == null) {
           console.log("new product")
-          if(formProduct.Info.Image.length === 0){
+          if (formProduct.Info.Image.length === 0) {
             toast.error('Please select at least 1 photo !', {
               position: "top-right",
               autoClose: 5000,
@@ -144,20 +188,20 @@ const AddProduct = props => {
               draggable: true,
               progress: undefined,
               theme: "light",
-              });
+            });
             return;
           }
           // add new product
           const initNewProduct = await AddNewProduct({
-            NameProduct:values.NameProduct,
-            DescriptionProduct:values.DescriptionProduct,
-            Ingerdient:values.Ingerdient,
-            Price:values.Price,
-            Quantity:values.Quantity,
-            ImageIdProduct:formProduct.Info.Image,
-            exp:values.exp,
-            mfg:values.mfg,
-            Classify:values.Classify,
+            NameProduct: values.NameProduct,
+            DescriptionProduct: values.DescriptionProduct,
+            Ingerdient: values.Ingerdient,
+            Price: values.Price,
+            Quantity: values.Quantity,
+            ImageIdProduct: formProduct.Info.Image,
+            exp: values.exp,
+            mfg: values.mfg,
+            Classify: values.Classify,
           })
           toast.success(`🦄 add complete ${values.NameProduct}`, {
             position: "top-right",
@@ -168,37 +212,60 @@ const AddProduct = props => {
             draggable: true,
             progress: undefined,
             theme: "light",
-            });
-            // reset ui 
-            editProduct()
-            formik.values.NameProduct = ""
-            formik.values.DescriptionProduct = ""
-            formik.values.Ingerdient = ""
-            formik.values.NameProduct = ""
-            formik.values.Classify = ""
-            formik.values.Price = 1
-            formik.values.Quantity = 1
-            formik.values.exp = ""
-            formik.values.mfg = ""
+          });
+          // reset ui 
+          editProduct()
+          formik.values.NameProduct = ""
+          formik.values.DescriptionProduct = ""
+          formik.values.Ingerdient = ""
+          formik.values.NameProduct = ""
+          formik.values.Classify = ""
+          formik.values.Price = 1
+          formik.values.Quantity = 1
+          formik.values.exp = ""
+          formik.values.mfg = ""
 
-        }else{
+        } else {
           console.log("updata ui")
+          const initNewProduct = await updateProduct(`${values.Pid}`, {
+            NameProduct: values.NameProduct,
+            DescriptionProduct: values.DescriptionProduct,
+            Ingerdient: values.Ingerdient,
+            Price: values.Price,
+            Quantity: values.Quantity,
+            ImageIdProduct: formProduct.Info.Image,
+            exp: values.exp,
+            mfg: values.mfg,
+            Classify: values.Classify,
+          },)
+          console.log(initNewProduct)
+          toast.success(`🦄 updata complete ${values.NameProduct}`, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
         }
-        await getProduct()
-      }catch(err){
+
+      } catch (err) {
         console.log(err);
-      }finally{
-        
+      } finally {
+
         getProduct();
         setStatus(true)
       }
-     
-      // addNewProduct()
-      
-    },
 
+      // addNewProduct()
+
+    },
+    
   })
- console.log("dtas",formProduct)
+
+  console.log("dtas", formProduct)
   return (
     <div className='AddProduct'>
       <div className='Colection AddProduct__list'>
@@ -222,8 +289,13 @@ const AddProduct = props => {
                       onClick={(e) => handleActive(item.Pid)}
                       key={item.Pid}
                     >
-                      <p>{item.Pid}</p>
-                      <h2>{item.Info.NameProduct}</h2>
+                      <div className="Colection__item__warpper">
+                        <p>{item.Pid}</p>
+                        <h2>{item.Info.NameProduct}</h2>
+                      </div>
+                      <div className="Colection__item__remove" onClick={(e)=>handleRemoveProduct(e,item.Pid)}>
+                        <i class='bx bx-minus'></i>
+                      </div>
                     </div>
                   )
                 })
@@ -237,7 +309,7 @@ const AddProduct = props => {
 
         <SectionTitle>
           <div className='AddProduct__title'>
-            
+
             <span>
               ID
             </span>
@@ -245,11 +317,18 @@ const AddProduct = props => {
               status
                 ? <div className="AddProduct__btn" onClick={() => handleStatus()}
                 >
-                  <Button>Chỉnh sửa</Button>
+                  <Button>Edit</Button>
                 </div>
-                : <div className="AddProduct__btn" onClick={formik.submitForm}>
-                  <Button>Lưu</Button>
-                </div>
+                : 
+                  <div className="AddProduct__warpper__btn">
+                    <div className="AddProduct__btn" onClick={()=>handleBackupProduct(formProduct)}>
+                      <Button>Close</Button>
+                    </div>
+                    <div className="AddProduct__btn" onClick={formik.submitForm}>
+                      <Button>Save</Button>
+                    </div>
+                    
+                  </div>
             }
           </div>
         </SectionTitle>
@@ -307,7 +386,7 @@ const AddProduct = props => {
                       disabled={status ? true : false}
                     />
 
-                    {formik.touched.exp&& formik.errors.exp
+                    {formik.touched.exp && formik.errors.exp
                       ? <p className="error-message">{formik.errors.exp}</p> : null}
 
                   </div>
@@ -334,7 +413,7 @@ const AddProduct = props => {
               <fieldset>
                 <legend>Number</legend>
                 <div className="AddProduct__fieldset__warpper">
-                <div className="input-container border--active input-container__center">
+                  <div className="input-container border--active input-container__center">
                     <label>Price</label>
                     <input
                       id="Price"
@@ -345,7 +424,7 @@ const AddProduct = props => {
                       onBlur={formik.handleBlur}
                       value={formik.values.Price}
                       disabled={status ? true : false}
-                      max="9999" 
+                      max="9999"
                       min="1"
                     />
 
@@ -364,7 +443,7 @@ const AddProduct = props => {
                       onBlur={formik.handleBlur}
                       value={formik.values.Quantity}
                       disabled={status ? true : false}
-                      max="9999" 
+                      max="9999"
                       min="1"
                     />
 
@@ -379,17 +458,17 @@ const AddProduct = props => {
               <fieldset>
                 <legend>Chart</legend>
                 <div className="input-container input-container__center">
-                    <label> Classify</label>
-                    <CustomSelect
-                      className='input'
-                      onChange={value => formik.setFieldValue('Classify', value.value)}
-                      value={formik.values.Classify}
-                      options={options}
-                      placeholder={" Classify"}
-                      disabled={status ? true : false}
-                      
-                    />
-                    {formik.touched.Classify && formik.errors.Classify ? <p className="error-message active__error">{formik.errors.Classify}</p> : null}
+                  <label> Classify</label>
+                  <CustomSelect
+                    className='input'
+                    onChange={value => formik.setFieldValue('Classify', value.value)}
+                    value={formik.values.Classify}
+                    options={options}
+                    placeholder={" Classify"}
+                    disabled={status ? true : false}
+
+                  />
+                  {formik.touched.Classify && formik.errors.Classify ? <p className="error-message active__error">{formik.errors.Classify}</p> : null}
                 </div>
                 <div className="input-container ">
                   <label> Ingerdient</label>
@@ -440,27 +519,33 @@ const AddProduct = props => {
                         <img
                           src={item}
                           alt="IMG" />
-                          <div className="AddProduct__item__remove">
-                          <i class='bx bxs-minus-circle'></i>
+                        {
+                          status == false && <div className="AddProduct__item__remove" onClick={() => handleRemoveImage(item)}>
+                            <i class='bx bxs-minus-circle'></i>
                           </div>
+                        }
+
                       </li>
                     )
                   })
                 }
-                <label className="AddProduct__item AddProduct__item__input"   htmlFor={`input__image`} >
+               
+
+
+
+              </ul>
+              <label className="AddProduct__item AddProduct__item__input" htmlFor={`input__image`} >
                   <i class='bx bxs-add-to-queue'></i>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     name='input__image'
                     id='input__image'
-                    onChange={(e)=>handleUploadImage(e.target.files[0])} 
-                    />
-                  
+                    disabled={status ? true : false}
+                    onChange={(e) => handleUploadImage(e.target.files[0])}
+
+                  />
+
                 </label>
-                
-                  
-                
-              </ul>
             </div>
           </div>
 

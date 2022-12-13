@@ -31,6 +31,8 @@ const Payment = props => {
   const {Authur,dispatch} = useContext(AuthContext);
   const [Total,setTotal] = useState(0);
   const history = useNavigate();
+  
+  console.log("Au",Authur)
   useEffect(()=>{
     if(Payment.success == true && Payment.payload.length > 0){
       let tmp = 0;
@@ -45,9 +47,10 @@ const Payment = props => {
   console.log("",Authur)
   console.log("ssssssssssssss",Payment)
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      emailOrPhoneNumber: "",
-      address: "",
+      emailOrPhoneNumber: Authur.success == true ?Authur.payload.user.Number:"",
+      address:Authur.success == true ?Authur.payload.user.Address:"",
       delivery:"",
       voucher:"",
 
@@ -177,7 +180,7 @@ const Payment = props => {
             <Section>
               <SectionTitle>Thông tin khách hàng</SectionTitle>
             <form action="">
-              <div className="input-container border--active">
+              <div className="Payment__group input-container border--active">
                 <input 
                   id = "emailOrPhoneNumber"
                   name = "emailOrPhoneNumber"
@@ -188,10 +191,10 @@ const Payment = props => {
                   value={formik.values.emailOrPhoneNumber}
                   required
                 />
-                <label>Email / Số điện thoại</label>
+                <label>Số điện thoại</label>
                 {formik.touched.emailOrPhoneNumber && formik.errors.emailOrPhoneNumber ?  <p className="error-message">{formik.errors.emailOrPhoneNumber}</p> : null}
               </div>
-              <div className="input-container border--active">
+              <div className=" Payment__group input-container border--active">
                 <input 
                   id = "address"
                   name = "address"
@@ -205,7 +208,7 @@ const Payment = props => {
                 <label>Địa Chỉ</label>
                 {formik.touched.address && formik.errors.address ?  <p className="error-message">{formik.errors.address}</p> : null}
               </div>
-              <div className="input-container">
+              <div className="Payment__group input-container">
                 <CustomSelect
                   className='input'
                   onChange={value=>formik.setFieldValue('delivery',value.value)}
@@ -214,14 +217,14 @@ const Payment = props => {
                   placeholder={"Hình thức thánh toán"}
                   
                   />
-                  {formik.touched.delivery && formik.errors.delivery ?  <p className="error-message active__error">{formik.errors.delivery}</p> : null}
+                  {formik.touched.delivery && formik.errors.delivery ?  <p className="error-message active__error__xl">{formik.errors.delivery}</p> : null}
               </div>
               {/* <button type="submit" onClick={formik.handleSubmit}>Đăng Nhập</button> */}
             </form>
             </Section>
             <Section>
               <SectionTitle>Mã giảm giá </SectionTitle>
-              <div className="input-container border--active">
+              <div className="Payment__group input-container border--active">
                 <input 
                   id = "voucher"
                   name = "voucher"

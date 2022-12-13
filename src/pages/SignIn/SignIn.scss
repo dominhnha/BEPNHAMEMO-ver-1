@@ -15,7 +15,7 @@
 
 .center h1{
     text-align: center;
-    padding: 111px 0 64px 0;
+    padding:1px 0 64px 0;
     font-size: 33px;
     font-weight:700;
 }
@@ -55,9 +55,14 @@
     font-size: 16px;
     pointer-events: none;
     transition: .5s;
+   
     @include mobile{
         font-size: 14px;
     }
+}
+.border-null{
+    border: none !important;
+    box-shadow: none !important;
 }
 .input-container span::before{
     content: '';
@@ -80,6 +85,9 @@
     color: red;
     @include mobile{
         font-size: 12px;
+    }
+    &.active{
+        top:40px;
     }
 }
 

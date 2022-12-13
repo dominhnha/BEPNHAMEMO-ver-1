@@ -1,5 +1,5 @@
 import {db} from '../../Firebase__config'
-import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { async } from '@firebase/util';
 import { set } from 'firebase/database';
 import {AddBestSell, GetNameProduct, GetPriceProduct, GetQuantityProduct,} from '../Product/Product'
@@ -53,10 +53,43 @@ export const GetUserCollection = async(uid)=>{
     }
 }
 
-export const UpdataUserCollection = async(uid,user)=>{
-    const {Email,Address,Number,ImgUser,FullName,Birthdate,Role} = user;
-    
+export const UpdateUser = async(uid,updateUser)=>{
+    const {
+        Email,
+        Address,
+        Number,
+        ImgUser,
+        FullName,
+        Birthdate,
+        
+    } = updateUser;
+    console.log(Email)
+    const docRef = doc(db, CollectionName,uid);
+    return await updateDoc(docRef,{
+        Email:Email,
+        Address:Address,
+        Number:Number,
+        ImgUser:ImgUser,
+        FullName:FullName,
+        Birthdate:Timestamp.fromDate(new Date(Birthdate)) ,
+        Role: "User"
+    })
+    .then(docRef =>{
+        return{
+            success: true,
+            payload:updateUser
+        }
+    })
+    .catch(e=>{
+        return{
+            success: false,
+            payload:e
+        }
+    })
+
+
 }
+
 export const AddToCart = async(value)=>{
     const {uid,Pid,Number} = value;
     const washingtonRef = doc(db,CollectionName, uid);

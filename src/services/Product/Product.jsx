@@ -325,9 +325,9 @@ export const updateProduct = async (pid, updateInfo) => {
         Ingerdient: Ingerdient,
         Price: Price,
         Quantity: Quantity,
-        ImageIdProduct: ImageIdProduct,
-        exp: new Timestamp.fromDate(new Date(exp)),
-        mfg: new Timestamp.fromDate(new Date(mfg)),
+        Image: ImageIdProduct,
+        exp: Timestamp.fromDate(new Date(exp)),
+        mfg: Timestamp.fromDate(new Date(mfg)),
         Classify: Classify,
     })
         .then(docRef => {

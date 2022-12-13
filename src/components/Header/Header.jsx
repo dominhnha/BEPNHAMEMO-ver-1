@@ -151,7 +151,7 @@ const Header = props => {
                       Authur.success !== false
                        ?<Avatar
                           img={ Authur.payload.user.ImgUser}
-                          path={"Account/SignIn"}
+                          path={`${Authur.success == true ?"/User":"Account/SignIn"}`}
                        />
                        :
                        <li className="header__user__item">

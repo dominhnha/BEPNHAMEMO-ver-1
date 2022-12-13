@@ -80,8 +80,8 @@ const SignIn = (props) => {
             value={formik.values.emailOrPhoneNumber}
             required
           />
-          <label>Email / Số điện thoại</label>
-          {formik.touched.emailOrPhoneNumber && formik.errors.emailOrPhoneNumber ?  <p className="error-message">{formik.errors.emailOrPhoneNumber}</p> : null}
+          <label className='border-null'>Email / Số điện thoại</label>
+          {formik.touched.emailOrPhoneNumber && formik.errors.emailOrPhoneNumber ?  <p className="error-message active">{formik.errors.emailOrPhoneNumber}</p> : null}
         </div>
         <div className="input-container">
           <input 
@@ -94,8 +94,8 @@ const SignIn = (props) => {
             value={formik.values.password}
             required
           />
-          {formik.touched.password && formik.errors.password ?  <p className="error-message">{formik.errors.password}</p> : null}
-          <label>Mật Khẩu</label>
+          {formik.touched.password && formik.errors.password ?  <p className="error-message  active">{formik.errors.password}</p> : null}
+          <label className='border-null'>Mật Khẩu</label>
         </div>
         <button type="submit">Đăng Nhập</button>
         <div className="forget-password">

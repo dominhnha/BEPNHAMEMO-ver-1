@@ -244,7 +244,7 @@
 .input-container input:valid ~ label {
     top: -5px;
 }
-.error-message {
+.Payment__group .error-message {
     position: absolute;
     top: 45px;
     left: 5px;
@@ -278,4 +278,7 @@ button[type="submit"]{
 }
 .active__error{
     top: 65px;
+}
+.active__error__xl {
+    top: 65px !important;
 }

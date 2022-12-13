@@ -162,7 +162,7 @@ const Charts = props => {
 
   return (
     <div className='Chart'>
-      <div className='Colection'>
+      <div className='Colection__chart'>
         <>
           <SectionTitle>
             <div className={`Chart__title ${active == null ? "active" : ""}`} onClick={(e)=>handleRemoveActive()}>
@@ -173,11 +173,11 @@ const Charts = props => {
             </div>
           </SectionTitle>
           <SectionBody>
-            <div className="Colection__list">
+            <div className="Colection__chart__list">
               {
                 Product && Product.map((item) => {
                   return (
-                    <div className={`Colection__item ${item.Pid.includes(active) ? "active" : ""}`} onClick={(e) => handleActive(item.Pid)} >
+                    <div className={`Colection__chart__item ${item.Pid.includes(active) ? "active" : ""}`} onClick={(e) => handleActive(item.Pid)} >
                       <p>{item.Pid}</p>
                       <h2>{item.Info.NameProduct}</h2>
                     </div>

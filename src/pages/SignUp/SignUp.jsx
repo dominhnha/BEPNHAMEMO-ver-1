@@ -80,8 +80,8 @@ const SignUp = props => {
               value={formik.values.firstname}
               required
             />
-            <label>Họ Đệm</label>
-           {formik.touched.firstname && formik.errors.firstname ?  <p className="error-message">{formik.errors.firstname}</p> : null}   
+            <label className='border-null'>Họ Đệm</label>
+           {formik.touched.firstname && formik.errors.firstname ?  <p className="error-message active">{formik.errors.firstname}</p> : null}   
         </div>
         <div className="input-container">
           <input 
@@ -93,8 +93,8 @@ const SignUp = props => {
               value={formik.values.lastname}
               required
             />
-            <label>Tên</label>
-           {formik.touched.lastname && formik.errors.lastname ?  <p className="error-message">{formik.errors.lastname}</p> : null}
+            <label className='border-null'>Tên</label>
+           {formik.touched.lastname && formik.errors.lastname ?  <p className="error-message active">{formik.errors.lastname}</p> : null}
         </div>
         
         <div className="input-container">
@@ -107,8 +107,8 @@ const SignUp = props => {
             value={formik.values.emailOrPhoneNumber}
             required
           />
-          <label>Email / Số điện thoại</label>
-          {formik.touched.emailOrPhoneNumber && formik.errors.emailOrPhoneNumber ?  <p className="error-message">{formik.errors.emailOrPhoneNumber}</p> : null}
+          <label className='border-null'>Email / Số điện thoại</label>
+          {formik.touched.emailOrPhoneNumber && formik.errors.emailOrPhoneNumber ?  <p className="error-message active">{formik.errors.emailOrPhoneNumber}</p> : null}
         </div>
         <div className="input-container">
           <input 
@@ -120,8 +120,8 @@ const SignUp = props => {
             value={formik.values.password}
             required
           />
-          {formik.touched.password && formik.errors.password ?  <p className="error-message">{formik.errors.password}</p> : null}
-          <label>Mật Khẩu</label>
+          <label className='border-null'>Mật Khẩu</label>
+          {formik.touched.password && formik.errors.password ?  <p className="error-message active">{formik.errors.password}</p> : null}
         </div>
         <div className="input-container">
           <input 
@@ -133,8 +133,8 @@ const SignUp = props => {
             value={formik.values.reEnterPassword}
             required
           />
-          {formik.touched.reEnterPassword && formik.errors.reEnterPassword ?  <p className="error-message">{formik.errors.reEnterPassword}</p> : null}
-          <label>Nhập lại mật khẩu</label>
+          <label className='border-null'>Nhập lại mật khẩu</label>
+          {formik.touched.reEnterPassword && formik.errors.reEnterPassword ?  <p className="error-message active">{formik.errors.reEnterPassword}</p> : null}
         </div>
         <button type="submit">Đăng Ký</button>
         <div className="forget-password">
