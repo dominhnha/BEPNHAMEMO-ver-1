@@ -42,4 +42,4 @@
 2. Mở dự án với VSCode, sử dụng tổ hợp phím ctrl + ` hoặc trên thanh công cụ chọn Terminal -> New terminal để mở terminal
 3. Chạy `npm i` trong lần đầu tiên chạy dự án để tải về các thư viện và các phụ thuộc của dự án. Đến lần thứ 2 trở đi có thể bỏ qua bước này
 4. Chạy `npm start`
-5. Trang web sẽ được chạy ở [localhost:3000]().
+5. Trang web sẽ được chạy ở [localhost:3000](localhost:3000).
