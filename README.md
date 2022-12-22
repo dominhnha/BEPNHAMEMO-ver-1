@@ -15,8 +15,11 @@
 ## Công nghệ
 
 **Frontend**
+
     - ReactJS 17
+
 **Backend**
+
     - Firebase Authentication
     - Firebase Realtime Database
 
