@@ -4,7 +4,7 @@
 Đây là một ứng dụng web bán hàng online sử dụng cơ chế Client-side rendering. Frontend client thực hiện lệnh gọi API đến máy chủ khi nó đang chạy.
 
 ## Screenshot
-![](https://firebasestorage.googleapis.com/v0/b/bepnhamemo-5a215.appspot.com/o/screenShots%2FHome.png?alt=media&token=9b7484da-09d3-48f6-a358-c4a7ce645c2b)
+![Trang Chủ](https://firebasestorage.googleapis.com/v0/b/bepnhamemo-5a215.appspot.com/o/screenShots%2FHome.png?alt=media&token=9b7484da-09d3-48f6-a358-c4a7ce645c2b)
 ![](https://firebasestorage.googleapis.com/v0/b/bepnhamemo-5a215.appspot.com/o/screenShots%2FProduct.png?alt=media&token=67089e89-33e8-4601-8fa1-c1b872237014)
 ![](https://firebasestorage.googleapis.com/v0/b/bepnhamemo-5a215.appspot.com/o/screenShots%2FContact.png?alt=media&token=763d5b34-d67d-4e50-990f-e9e07a2a59ec)
 ![](https://firebasestorage.googleapis.com/v0/b/bepnhamemo-5a215.appspot.com/o/screenShots%2FCart.png?alt=media&token=93d66be3-5fb5-40eb-a135-a57c9771a80d)
