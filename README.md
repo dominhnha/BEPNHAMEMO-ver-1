@@ -25,7 +25,7 @@
 
 ## Làm thế nào để chạy dự án?
 1. Cài đặt [Node.js](https://nodejs.org/en/)(Chúng tôi đề xuất sử dụng phiên bản LTS)
-2. Mở dự án với VSCode, sử dụng tổ hợp phím `ctrl + `` để mở terminal
+2. Mở dự án với VSCode, sử dụng tổ hợp phím `ctrl + ` để mở terminal
 3. Chạy `npm i` trong lần đầu tiên chạy dự án để tải về các thư viện và các phụ thuộc của dự án. Đến lần thứ 2 trở đi có thể bỏ qua bước này
 4. Chạy `npm start`
 5. Trang web sẽ được chạy ở [localhost:3000]().
