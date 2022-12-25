@@ -355,6 +355,7 @@ const ProductView = props => {
                         {
                           Classify.length > 0 
                           ? Classify.map(item=>{
+                            console.log("item",item)
                               return(
                                 <SwiperSlide>
                                   <ProductCand

@@ -14,7 +14,17 @@
     &__view{
         width: 70%;
     }
-
+    @include tablet{
+        &__container{
+            flex-direction: column;
+        }
+        &__siderBar{
+            width: 100%;
+        }
+        &__view{
+            width: 100%;
+        }
+    }
     &__navication{
         padding: 10px;
         

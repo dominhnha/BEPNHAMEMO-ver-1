@@ -70,7 +70,7 @@ const Home = props => {
             <div className="Home__section__top">
               <div className="Home__section__wrapper">
                 <h2>Sản phẩm mới</h2>
-                <Link to={"/Product"}>
+                <Link to={"/Product/Search"}>
                   <Button>Xem Thêm</Button>
                 </Link>
               </div>
@@ -120,7 +120,7 @@ const Home = props => {
             <div className="Home__section__top">
               <div className="Home__section__wrapper">
                 <h2>Sản bán chạy</h2>
-                <Link to={"/Product"}>
+                <Link to={"/Product/Search"}>
                   <Button>Xem Thêm</Button>
                 </Link>
               </div>

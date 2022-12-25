@@ -69,7 +69,7 @@ const Search = props => {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]); // product aray
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(8);
+  const [postsPerPage] = useState(12);
 
   const [currentPosts , setCurrentPosts] = useState([]) //post Array
   const [lenghtPage,setLeghtPage] = useState(0)

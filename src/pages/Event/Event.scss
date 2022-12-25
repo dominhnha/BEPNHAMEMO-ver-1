@@ -1,6 +1,7 @@
 @import "../../sass/variables";
 @import "../../sass/mixin";
 @import "../../sass/base";
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 .Event {
     min-height: 200vh;
     &__container{
@@ -8,7 +9,9 @@
         z-index: 3;
     }
     &__banner{
+        overflow: hidden;
         img {
+            position: relative;
             border-radius:20px;
             // width: 100%;
             // height: 60vh;
@@ -19,6 +22,54 @@
                 object-fit: fill;
                 padding: 10px 10px;
             }   
+        }
+        &__title{
+            color: $price-color;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 0%;
+            left: 5%;
+            font-family: 'Lobster', cursive;
+            &__text{
+                font-size: 64px;
+                
+            }
+            &__number{
+                font-size: 192px;
+                // letter-spacing: 24px;
+            }
+            @media only screen and (max-width: 1326px) {
+                bottom:10%;
+                
+            }
+            @include tablet{
+                
+                &__text{
+                    font-size: 44px;
+                    
+                }
+                &__number{
+                    font-size: 92px;
+                    // letter-spacing: 24px;
+                }
+            }
+            @include mobile{
+                display: none;
+            }
+        }
+        &__Lantern{
+            position: absolute;
+            bottom: -388px;
+            left: -53px;
+            @include tablet{
+                display: none;
+            }
+            @media only screen and (max-width: 1326px) {
+                display: none;
+            }
         }
 
     }
@@ -42,9 +93,7 @@
                 text-transform: uppercase;
                 font-weight: 700;
                 box-shadow: rgb(0 0 0 / 25%) -3px 3px 1px 0px;
-            }
-            
-            
+            }     
         }
     }
 }

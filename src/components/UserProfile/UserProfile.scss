@@ -1,3 +1,6 @@
+@import "../../sass/variables";
+@import "../../sass/mixin";
+@import "../../sass/base";
 .UserProfile{
     padding: 10px;
     margin: 5px;
@@ -132,6 +135,11 @@
     // border-bottom:2px solid #FF8B04 ;
     padding: 10px 0;
     margin-bottom: 12px;
+    @include tablet{
+        flex-direction: column;
+        justify-content: flex-start ;
+        align-items: flex-start !important;
+    }
     
     // padding-bottom: 20px;
     &__center{
@@ -158,6 +166,10 @@
         border: 2px solid transparent;
         outline: none;
         padding: 5px;
+        margin: 5px 0;
+        @include tablet{
+            width: 100%;
+        }
         
     }
     textarea{
@@ -187,6 +199,15 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
+    @include tablet{
+        flex-direction: column;
+        .input__avatar{
+            width: 100%;
+        }
+        .input__newAvatar{
+            width: 100%;
+        }
+    }
 }
 .input__avatar{
     width: 50%;
@@ -218,5 +239,6 @@
         display: none;
         
     }
+    
 
 }

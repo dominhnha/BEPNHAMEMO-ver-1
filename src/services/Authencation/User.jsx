@@ -60,7 +60,7 @@ export const UpdateUser = async(uid,updateUser)=>{
         Number,
         ImgUser,
         FullName,
-        Birthdate,
+        Birthdate, 
         
     } = updateUser;
     console.log(Email)

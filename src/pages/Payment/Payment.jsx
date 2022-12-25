@@ -32,7 +32,7 @@ const Payment = props => {
   const [Total,setTotal] = useState(0);
   const history = useNavigate();
   
-  console.log("Au",Authur)
+  
   useEffect(()=>{
     if(Payment.success == true && Payment.payload.length > 0){
       let tmp = 0;

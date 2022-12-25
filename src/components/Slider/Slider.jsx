@@ -21,23 +21,25 @@ import { Link } from 'react-router-dom';
 import Img  from '../../assets/Img/Slider.jpg'
 import Button from '../Button/Button/Button';
 import slider_01 from '../../assets/Img/Slider.jpg'
-import slider_02 from '../../assets/Img/pexels-brett-sayles-1708601.jpg'
+import slider_02 from '../../assets/Img/tet.jpg'
   // install Swiper modules
 SwiperCore.use([Autoplay,Pagination,Navigation]);
 
 const ListSlider = [
+    {
+        Image:slider_02,
+        Title:"Tết Việt",
+        desc:`Bếp Nhà Mẹ Mỡ - Mang hương vị Tết đong đầy
+        `,
+        url:"/event"
+    },
     {
         Image:slider_01,
         Title:"Vui Nhà Làm",
         desc:"Bánh truyền thống mang nét đẹp riêng nhà Mỡ cùng nhau tận hưởng phút giây tuyệt vời ...   ",
         url:"/Product/Search"  
     },
-    {
-        Image:slider_02,
-        Title:"Giáng Sinh",
-        desc:"Tháng 12 đến ai ai cũng nghĩ đến ngày lễ Giáng Sinh , ông già noel, cây thông hay những hộp quà nhỏ xinh.",
-        url:"/event"
-    },
+    
     
 ]
 const Slider = props => {
