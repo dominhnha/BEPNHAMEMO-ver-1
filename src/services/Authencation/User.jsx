@@ -1,7 +1,6 @@
 import {db} from '../../Firebase__config'
-import { addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { AddBestSell, GetNameProduct, GetPriceProduct, GetProductById, GetQuantityProduct } from '../Product/Product';
-import { CheckDiscount, GetDiscountByID, GetPercentDiscountByID } from './Discount';
+import { addDoc, arrayUnion, collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { AddBestSell, GetQuantityProduct } from '../Product/Product';
 import { AddPurchaseHistory } from './PurchaseHistory';
 
 const CollectionName = "User"
@@ -151,6 +150,7 @@ const {Email,Address,Payments,Total,PriceDiscount,
         Payments:Payments,
         FullName:FullName,
         EmailOfPhone:Email,
+        Status:"Pending"
     }
     if(status===true){
         
@@ -209,3 +209,15 @@ export const GetQuantity=async(uid,uPid)=>{
     }
 }
 
+//Update Status order
+
+export const UpdateStatus=async(uid,PurID,Status)=>{
+    const docRefPur = doc(db, "PurchaseHistory",PurID);
+    const docRefPurById = doc(db, CollectionName,uid,"PurchaseHistoryForUser",PurID);
+    await updateDoc(docRefPur,{
+        Status:Status
+    })
+    await updateDoc(docRefPurById,{
+        Status:Status
+    })
+}
