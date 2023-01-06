@@ -18,27 +18,6 @@ const docRef = doc(db, CollectionName, revID, subName, subID);
 Add RevenuePerMonth
 */
 
-
-export const AddRevenuePerMonth = async () => {
-
-    const newRev = {
-        Item: [],
-        TotalQuantitySold: ""
-    }
-
-    function surprise() {
-        (function loop(AddRevenuePerMonth) {
-            var now = new Date();
-            if (now.getDate() === 1 && now.getHours() === 0 && now.getMinutes() === 0) {
-                setDoc(docRef, newRev);
-            }
-            now = new Date();                  // allow for time passing
-            var delay = 60000 - (now % 60000); // exact ms to next minute interval
-            setTimeout(loop, delay);
-        })();
-    }
-    return surprise();
-}
 export const AddProductToRevenue = async (pid, quantity) => {
     const NameProduct = await GetNameProduct(pid);
     const initProduct = {
@@ -67,6 +46,7 @@ export const AddProductToRevenue = async (pid, quantity) => {
     await updateDoc(docRef, {
         QuantitySold: QuantitySold
     })
+
 }
 
 
@@ -81,11 +61,17 @@ export const RevenuePerMonth = async () => {
             Item: doc.data().Item
         })
     })
-    const month = Now.getMonth + 1;
+    const month = Now.getMonth() + 1;
     const year = Now.getFullYear();
-
     const ListProduct = await (await GetAllProduct()).payload;
     const ListItem = [];
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
+        await setDoc(docRef, {
+            Item: [],
+            QuantitySold: 0
+        })
+    }
     for (let i = 0; i < ListPurchase.length; i++) {
         if (month === ListPurchase[i].Month && year === ListPurchase[i].Year) {
             ListItem.push(ListPurchase[i].Item);
@@ -94,7 +80,6 @@ export const RevenuePerMonth = async () => {
     const flatValues = ListItem.reduce((total, value) => {
         return total.concat(value);
     }, []);
-
     for (let i = 0; i < ListProduct.length; i++) {
         let total = 0;
         for (let j = 0; j < flatValues.length; j++) {
@@ -104,9 +89,10 @@ export const RevenuePerMonth = async () => {
             }
 
         }
-        await AddProductToRevenue(ListProduct[i].Pid, total);
 
+        await AddProductToRevenue(ListProduct[i].Pid, total);
     }
+
 }
 
 export const GetQuantitySoldProductOrMonth = async (pid, month, year) => {
@@ -205,7 +191,7 @@ export const GetRevenuePerMonth = async (month, year) => {
 
 //Get the total price for month and year.
 
-export const GetTotalPriceForMonth = async (month) => {
+export const GetTotalPriceForMonth = async (month, year) => {
     const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
     const ListPurchase = [];
     docsSnap.forEach(doc => {
@@ -213,32 +199,19 @@ export const GetTotalPriceForMonth = async (month) => {
             PurId: doc.id,
             Month: doc.data().DayPurchased.toDate().getMonth() + 1,
             Year: doc.data().DayPurchased.toDate().getFullYear(),
-            Item: doc.data().Item,
-            Total:doc.data().Total,
-            Discount: doc.data().Discount,
-            Payments:doc.data().Payment
+            Total: doc.data().Total
+
         })
     })
-    const ListItem = [];
+    let TotalPrice = 0;
     for (let i = 0; i < ListPurchase.length; i++) {
-        if (month === ListPurchase[i].Month) {
-            ListItem.push({
-                Discount: ListPurchase[i].Discount,
-                Payment:ListPurchase[i].Payments,
-                Item:ListPurchase[i].Item,
-                ToTal:ListPurchase[i].Total
-            });
-
+        if (month === ListPurchase[i].Month && year === ListPurchase[i].Year) {
+            TotalPrice += Number(ListPurchase[i].Total);
         }
     }
-    let TotalPrice =0;
-    for (let i = 0; i < ListItem.length; i++) {
-        TotalPrice+=ListItem[i].ToTal;
-    }
-    ListItem.push(TotalPrice)
-    return{
+    return {
         success: true,
-        payload:ListItem,
+        payload: TotalPrice,
     }
 
 }
@@ -249,36 +222,22 @@ export const GetTotalPriceForYear = async (year) => {
     docsSnap.forEach(doc => {
         ListPurchase.push({
             PurId: doc.id,
-            Month: doc.data().DayPurchased.toDate().getMonth() + 1,
             Year: doc.data().DayPurchased.toDate().getFullYear(),
-            Item: doc.data().Item,
-            Total:doc.data().Total,
-            Discount: doc.data().Discount,
-            Payments:doc.data().Payment
+            Total: doc.data().Total
+
         })
     })
-    const ListItem = [];
+    let TotalPrice = 0;
     for (let i = 0; i < ListPurchase.length; i++) {
         if (year === ListPurchase[i].Year) {
-            ListItem.push({
-                Discount: ListPurchase[i].Discount,
-                Payment:ListPurchase[i].Payments,
-                Item:ListPurchase[i].Item,
-                ToTal:ListPurchase[i].Total
-            });
-
+            TotalPrice += Number(ListPurchase[i].Total);
         }
-
     }
-    let TotalPrice =0;
-    for (let i = 0; i < ListItem.length; i++) {
-        TotalPrice+=ListItem[i].ToTal;
-    }
-    ListItem.push(TotalPrice)
-    return{
+    return {
         success: true,
-        payload:ListItem,
+        payload: TotalPrice,
     }
+
 
 }
 
@@ -287,30 +246,32 @@ export const GetTotalPriceForYear = async (year) => {
 npm install react-calendar
 */
 //Get total price for week
-export const GetTotalPriceForWeek = async()=>{
-    const week = getWeekNumber(Now,CALENDAR_TYPES.US);
+export const GetTotalPriceForWeek = async () => {
+    const week = getWeekNumber(Now, CALENDAR_TYPES.US);
     const docsSnap = await getDocs(collection(db, "PurchaseHistory"));
     const ListPurchase = [];
     docsSnap.forEach(doc => {
         ListPurchase.push({
             PurId: doc.id,
-            Week:getWeekNumber(doc.data().DayPurchased.toDate(),CALENDAR_TYPES.US),
-            Total:doc.data().Total
+            Week: getWeekNumber(doc.data().DayPurchased.toDate(), CALENDAR_TYPES.US),
+            Total: doc.data().Total
         })
     })
-    let Total =0;
-    for(let i=0; i < ListPurchase.length; i++) {
-        if(week ===ListPurchase[i].Week){
-            Total+=ListPurchase[i].Total;
+    let Total = 0;
+    for (let i = 0; i < ListPurchase.length; i++) {
+        if (week === ListPurchase[i].Week) {
+            Total += ListPurchase[i].Total;
         }
     }
-    
-    return{
+
+    return {
         success: true,
-        payload:{
-            Week:week,
-            Year:Now.getFullYear(),
-            TotalPrice:Total
+        payload: {
+            Week: week,
+            Year: Now.getFullYear(),
+            TotalPrice: Total
         }
     }
 }
+
+
